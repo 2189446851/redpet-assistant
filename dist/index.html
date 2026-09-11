@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080d18" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23080d18'/%3E%3Cpath d='M14 43V30h8v13zm14 0V20h8v23zm14 0V11h8v32z' fill='%235EEAD4'/%3E%3C/svg%3E" />
+  <title>社群数据看板</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b14;
+      --panel: #0d1422;
+      --panel-2: #111a2a;
+      --line: rgba(148, 163, 184, .14);
+      --muted: #8b9bb1;
+      --text: #f6f8fb;
+      --cyan: #5eead4;
+      --blue: #60a5fa;
+      --purple: #a78bfa;
+      --orange: #fb923c;
+      --red: #fb7185;
+      --slate: #64748b;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 18% -10%, rgba(94,234,212,.08), transparent 30%),
+        radial-gradient(circle at 86% 8%, rgba(96,165,250,.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      font-size: 14px;
+    }
+    button, input { font: inherit; }
+    .shell { max-width: 1460px; margin: 0 auto; padding: 0 28px 52px; }
+    header {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 760; letter-spacing: -.02em; }
+    .mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: linear-gradient(145deg, #1b3345, #10253b);
+      border: 1px solid rgba(94,234,212,.25);
+      box-shadow: inset 0 0 18px rgba(94,234,212,.08);
+    }
+    .mark svg { width: 19px; height: 19px; }
+    .actions { display: flex; align-items: center; gap: 10px; }
+    .badge, .tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      border: 1px solid var(--line); border-radius: 999px;
+      color: #b8c4d5; background: rgba(255,255,255,.025);
+      padding: 7px 11px; font-size: 12px;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px rgba(94,234,212,.7); }
+    .agent {
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
+      border-radius: 10px; color: #061018; background: var(--cyan);
+      text-decoration: none; font-weight: 720; transition: transform .18s, box-shadow .18s;
+    }
+    .agent:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(94,234,212,.18); }
+    .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 38px 0 24px; }
+    .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 9px 0 8px; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; line-height: 1.06; }
+    .intro p { margin: 0; color: var(--muted); max-width: 680px; line-height: 1.7; }
+    .period { color: #cbd5e1; white-space: nowrap; padding-bottom: 3px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .card {
+      background: linear-gradient(180deg, rgba(17,26,42,.92), rgba(12,19,32,.96));
+      border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: 0 16px 42px rgba(0,0,0,.14);
+    }
+    .kpi { padding: 19px 20px; min-height: 126px; position: relative; overflow: hidden; }
+    .kpi::after { content: ""; position: absolute; inset: auto -34px -48px auto; width: 110px; height: 110px; border: 18px solid var(--accent); opacity: .055; border-radius: 50%; }
+    .kpi .label { color: var(--muted); font-size: 12px; }
+    .kpi .value { margin: 12px 0 8px; font-size: 31px; line-height: 1; font-weight: 780; letter-spacing: -.04em; }
+    .kpi .value small { font-size: 13px; color: var(--muted); font-weight: 550; margin-left: 4px; }
+    .kpi .foot { font-size: 12px; color: #aebacc; }
+    .kpi .foot strong { color: var(--accent); }
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, .85fr); gap: 14px; margin-top: 14px; }
+    .panel { padding: 20px; }
+    .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .panel h2 { font-size: 16px; margin: 0 0 5px; letter-spacing: -.015em; }
+    .sub { color: var(--muted); font-size: 12px; }
+    .chart-wrap { min-height: 262px; position: relative; }
+    #trend { width: 100%; height: 260px; overflow: visible; }
+    .axis-label { fill: #75859b; font-size: 11px; }
+    .gridline { stroke: rgba(148,163,184,.11); stroke-width: 1; }
+    .line { fill: none; stroke: url(#lineGradient); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .area { fill: url(#areaGradient); }
+    .point { fill: #0d1422; stroke: var(--cyan); stroke-width: 2.5; }
+    .donut-box { display: grid; place-items: center; min-height: 204px; }
+    .donut {
+      width: 172px; aspect-ratio: 1; border-radius: 50%;
+      background: conic-gradient(var(--blue) 0 15.79%, #263247 15.79% 100%);
+      display: grid; place-items: center; position: relative;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 0 40px rgba(96,165,250,.07);
+    }
+    .donut::after { content: ""; width: 116px; aspect-ratio: 1; border-radius: 50%; background: #0d1523; box-shadow: inset 0 0 0 1px var(--line); }
+    .donut-copy { position: absolute; z-index: 1; text-align: center; }
+    .donut-copy strong { display: block; font-size: 32px; letter-spacing: -.05em; }
+    .donut-copy span { color: var(--muted); font-size: 11px; }
+    .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+    .legend-item { display: flex; justify-content: space-between; align-items: center; color: #b9c5d4; font-size: 12px; }
+    .legend-name { display: flex; align-items: center; gap: 8px; }
+    .swatch { width: 8px; height: 8px; border-radius: 3px; }
+    .middle-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 14px; margin-top: 14px; }
+    .rank-list { display: grid; gap: 13px; }
+    .rank-row { display: grid; grid-template-columns: minmax(110px, 1.15fr) 2.3fr 36px; align-items: center; gap: 12px; }
+    .rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c7d2e1; font-size: 12px; }
+    .bar-track { height: 7px; border-radius: 999px; background: #1c2737; overflow: hidden; }
+    .bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), var(--cyan)); box-shadow: 0 0 10px rgba(94,234,212,.18); }
+    .bar-value { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; color: #e5eaf2; }
+    .rule-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+    .rule {
+      border: 1px solid var(--line); background: rgba(255,255,255,.018); border-radius: 12px; padding: 13px 12px; min-height: 91px;
+      position: relative;
+    }
+    .rule:not(:last-child)::after { content: "→"; position: absolute; right: -9px; top: 35px; z-index: 2; color: #617087; font-size: 13px; }
+    .rule strong { display: block; margin-bottom: 8px; font-size: 13px; }
+    .rule span { color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .notice { display: flex; gap: 11px; margin-top: 12px; border: 1px solid rgba(251,146,60,.2); background: rgba(251,146,60,.055); color: #d7c4b5; padding: 12px 13px; border-radius: 12px; font-size: 12px; line-height: 1.55; }
+    .notice b { color: #fdba74; white-space: nowrap; }
+    .table-panel { margin-top: 14px; padding: 0; overflow: hidden; }
+    .table-toolbar { padding: 19px 20px 15px; display: flex; justify-content: space-between; align-items: center; gap: 14px; border-bottom: 1px solid var(--line); }
+    .filters { display: flex; flex-wrap: wrap; gap: 7px; }
+    .filter {
+      border: 1px solid var(--line); color: #98a8bb; background: rgba(255,255,255,.018);
+      border-radius: 8px; padding: 7px 10px; cursor: pointer; transition: .15s;
+    }
+    .filter:hover, .filter.active { color: #eef5ff; border-color: rgba(94,234,212,.35); background: rgba(94,234,212,.08); }
+    .search {
+      width: 220px; max-width: 40vw; border: 1px solid var(--line); background: #0b1220; color: var(--text);
+      border-radius: 9px; padding: 8px 11px; outline: none;
+    }
+    .search:focus { border-color: rgba(94,234,212,.45); }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 870px; }
+    th, td { padding: 13px 20px; text-align: left; border-bottom: 1px solid rgba(148,163,184,.09); white-space: nowrap; }
+    th { color: #77879c; font-size: 11px; font-weight: 620; letter-spacing: .04em; background: rgba(255,255,255,.012); }
+    td { color: #c8d2df; font-size: 12px; }
+    tbody tr:hover { background: rgba(255,255,255,.018); }
+    .num { font-variant-numeric: tabular-nums; }
+    .pill { display: inline-flex; align-items: center; justify-content: center; min-width: 49px; padding: 5px 8px; border-radius: 999px; font-size: 11px; border: 1px solid transparent; }
+    .tier-high { color: #d8ccff; background: rgba(167,139,250,.11); border-color: rgba(167,139,250,.2); }
+    .tier-active { color: #a8cdfc; background: rgba(96,165,250,.11); border-color: rgba(96,165,250,.2); }
+    .tier-low { color: #fecdd3; background: rgba(251,113,133,.1); border-color: rgba(251,113,133,.2); }
+    .tier-normal { color: #b5c0ce; background: rgba(100,116,139,.11); border-color: rgba(100,116,139,.2); }
+    .warn { color: #fdba74; display: inline-flex; gap: 6px; align-items: center; }
+    .warn::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px rgba(251,146,60,.6); }
+    .muted { color: #64748b; }
+    .table-foot { padding: 13px 20px 17px; color: #68788d; font-size: 11px; }
+    footer { display: flex; justify-content: space-between; gap: 16px; color: #58687e; font-size: 11px; padding-top: 18px; }
+    @media (max-width: 980px) {
+      .kpis { grid-template-columns: 1fr 1fr; }
+      .main-grid, .middle-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .shell { padding: 0 16px 34px; }
+      header { height: 66px; }
+      .badge { display: none; }
+      .intro { align-items: flex-start; flex-direction: column; padding-top: 28px; }
+      .period { white-space: normal; }
+      .kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .kpi { min-height: 116px; padding: 16px; }
+      .kpi .value { font-size: 27px; }
+      .rule-flow { grid-template-columns: 1fr 1fr; }
+      .rule:not(:last-child)::after { display: none; }
+      .table-toolbar { align-items: flex-start; flex-direction: column; }
+      .search { width: 100%; max-width: none; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 18v-6h4v6m4 0V7h4v11m4 0V3" stroke="#5eead4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>社群数据看板</span>
+      </div>
+      <div class="actions">
+        <span class="badge"><i class="dot"></i>样本数据 · 已更新</span>
+        <a class="agent" href="https://85f1e52efce24789a536645bf50ca68f.app.workbuddy.link" target="_blank" rel="noreferrer">Agent 助手 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <div class="eyebrow">Community Pulse</div>
+          <h1>社群活跃，一眼看清</h1>
+          <p>汇总每日活跃人数，按固定优先级生成每周唯一档位；预警与正式档位分开显示，避免单日波动造成误判。</p>
+        </div>
+        <div class="period">统计周期：9 月 7 日—9 月 10 日 · 4 个有效日</div>
+      </section>
+
+      <section class="kpis" aria-label="核心数据">
+        <article class="card kpi" style="--accent: var(--cyan)"><div class="label">9 月 10 日活跃人数</div><div class="value">98<small>人次</small></div><div class="foot">较前一有效日 <strong>+21.0%</strong></div></article>
+        <article class="card kpi" style="--accent: var(--blue)"><div class="label">本周活跃档</div><div class="value">3<small>个群</small></div><div class="foot">占监测社群 <strong>15.8%</strong></div></article>
+        <article class="card kpi" style="--accent: var(--orange)"><div class="label">低活预警</div><div class="value">7<small>个群</small></div><div class="foot">连续 4 个有效日低于 5 人</div></article>
+        <article class="card kpi" style="--accent: var(--purple)"><div class="label">监测社群</div><div class="value">19<small>个群</small></div><div class="foot">规模数据可匹配 <strong>15 个群</strong></div></article>
+      </section>
+
+      <section class="main-grid">
+        <article class="card panel">
+          <div class="panel-head"><div><h2>每日活跃人数趋势</h2><div class="sub">最近 8 个有效统计日 · 合计人次</div></div><span class="tag">峰值 98</span></div>
+          <div class="chart-wrap"><svg id="trend" role="img" aria-label="最近八个有效统计日的活跃人数趋势"></svg></div>
+        </article>
+        <article class="card panel">
+          <div class="panel-head"><div><h2>本周社群分档</h2><div class="sub">互斥分类 · 每群只计入一档</div></div></div>
+          <div class="donut-box"><div class="donut"><div class="donut-copy"><strong>19</strong><span>监测社群</span></div></div></div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:var(--purple)"></i>高活</span><strong>0</strong></div>
+            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:var(--blue)"></i>活跃</span><strong>3</strong></div>
+            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:var(--red)"></i>低活</span><strong>0</strong></div>
+            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:#263247"></i>普通</span><strong>16</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="middle-grid">
+        <article class="card panel">
+          <div class="panel-head"><div><h2>9 月 10 日活跃排行</h2><div class="sub">按当日活跃人数降序 · TOP 8</div></div></div>
+          <div id="ranking" class="rank-list"></div>
+        </article>
+        <article class="card panel">
+          <div class="panel-head"><div><h2>每周判定规则</h2><div class="sub">严格按从左到右的优先级命中</div></div></div>
+          <div class="rule-flow">
+            <div class="rule"><strong style="color:#c4b5fd">高活</strong><span>至少 3 日<br>≥ 20 人</span></div>
+            <div class="rule"><strong style="color:#93c5fd">活跃</strong><span>至少 3 日<br>≥ 10 人</span></div>
+            <div class="rule"><strong style="color:#fda4af">低活</strong><span>完整周期<br>每日 &lt; 5 人</span></div>
+            <div class="rule"><strong style="color:#b6c2d0">普通</strong><span>其余全部<br>社群</span></div>
+          </div>
+          <div class="notice"><b>预警单列</b><span>连续 3—4 个有效统计日低于 5 人，只加“低活预警”标签，四档中仍归普通。</span></div>
+        </article>
+      </section>
+
+      <section class="card table-panel">
+        <div class="table-toolbar">
+          <div><h2 style="margin:0 0 10px;font-size:16px">社群明细</h2><div class="filters" role="group" aria-label="筛选社群"><button class="filter active" data-filter="all">全部 19</button><button class="filter" data-filter="活跃">活跃 3</button><button class="filter" data-filter="普通">普通 16</button><button class="filter" data-filter="warning">低活预警 7</button></div></div>
+          <input id="search" class="search" type="search" placeholder="搜索群名称" aria-label="搜索群名称" />
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>社群</th><th>群规模</th><th>9/7</th><th>9/8</th><th>9/9</th><th>9/10</th><th>本周日均</th><th>周档位</th><th>风险标签</th></tr></thead>
+            <tbody id="groupRows"></tbody>
+          </table>
+        </div>
+        <div id="tableFoot" class="table-foot"></div>
+      </section>
+    </main>
+
+    <footer><span>数据来源：导出的企业微信在线表格 · 原型尚未自动同步</span><span>正式接入方案：企业微信官方 CLI 扫码授权</span></footer>
+  </div>
+
+  <script>
+    const dashboard = {
+      dates: ["9.1","9.2","9.3","9.4","9.7","9.8","9.9","9.10"],
+      totals: [93,72,59,88,81,98,81,98],
+      groups: [
+        {name:"猫猫托儿所1群",size:499,history:[3,2,5,1,3,3,7,7],tier:"普通",warning:false},
+        {name:"猫猫托儿所2群",size:434,history:[2,5,3,2,3,5,4,5],tier:"普通",warning:false},
+        {name:"猫猫托儿所3群",size:null,history:[0,0,0,0,0,0,0,0],tier:"普通",warning:true},
+        {name:"猫猫总裁办1群",size:500,history:[4,2,2,0,10,5,6,6],tier:"普通",warning:false},
+        {name:"猫猫总裁办2群",size:500,history:[5,2,1,2,2,2,2,9],tier:"普通",warning:false},
+        {name:"猫猫总裁办3群",size:472,history:[2,1,2,1,3,4,3,2],tier:"普通",warning:true},
+        {name:"猫猫总裁办4群",size:487,history:[5,5,1,6,8,7,5,4],tier:"普通",warning:false},
+        {name:"猫猫总裁办5群",size:310,history:[13,5,2,12,10,12,3,4],tier:"普通",warning:false},
+        {name:"猫猫总裁办6群",size:null,history:[0,0,0,0,0,0,0,0],tier:"普通",warning:true},
+        {name:"猫猫养老院1群",size:483,history:[2,0,0,0,0,3,1,1],tier:"普通",warning:true},
+        {name:"狗狗托儿所",size:431,history:[3,3,0,5,2,7,4,2],tier:"普通",warning:false},
+        {name:"狗狗托儿所2群",size:null,history:[0,0,0,0,0,0,0,2],tier:"普通",warning:true},
+        {name:"狗狗总裁办1群",size:499,history:[4,2,2,5,1,1,2,3],tier:"普通",warning:true},
+        {name:"狗狗总裁办2群",size:500,history:[11,11,10,15,10,13,10,10],tier:"活跃",warning:false},
+        {name:"狗狗养老院",size:294,history:[4,4,1,6,2,5,3,3],tier:"普通",warning:false},
+        {name:"科学养宠社1群",size:497,history:[7,2,8,3,8,6,6,8],tier:"普通",warning:false},
+        {name:"户外遛宠社",size:424,history:[13,16,12,20,11,15,15,20],tier:"活跃",warning:false},
+        {name:"户外遛宠社2群",size:null,history:[0,0,0,0,0,0,0,0],tier:"普通",warning:true},
+        {name:"萌宠美颜社",size:322,history:[15,12,10,10,8,10,10,12],tier:"活跃",warning:false}
+      ]
+    };
+
+    function renderTrend() {
+      const svg = document.getElementById("trend");
+      const W = 760, H = 260, pad = {l:35,r:20,t:18,b:34};
+      const min = 50, max = 105;
+      const x = i => pad.l + i * (W-pad.l-pad.r)/(dashboard.totals.length-1);
+      const y = v => pad.t + (max-v)*(H-pad.t-pad.b)/(max-min);
+      const pts = dashboard.totals.map((v,i) => [x(i),y(v)]);
+      const line = pts.map((p,i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+      const area = `${line} L${pts.at(-1)[0]},${H-pad.b} L${pts[0][0]},${H-pad.b} Z`;
+      const grids = [60,80,100].map(v => `<g><line class="gridline" x1="${pad.l}" x2="${W-pad.r}" y1="${y(v)}" y2="${y(v)}"/><text class="axis-label" x="0" y="${y(v)+4}">${v}</text></g>`).join("");
+      const labels = dashboard.dates.map((d,i) => `<text class="axis-label" text-anchor="middle" x="${x(i)}" y="${H-8}">${d}</text>`).join("");
+      const points = pts.map((p,i) => `<g><circle class="point" cx="${p[0]}" cy="${p[1]}" r="4"/><title>${dashboard.dates[i]}：${dashboard.totals[i]} 人次</title></g>`).join("");
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      svg.innerHTML = `<defs><linearGradient id="lineGradient"><stop stop-color="#60a5fa"/><stop offset="1" stop-color="#5eead4"/></linearGradient><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#5eead4" stop-opacity=".24"/><stop offset="1" stop-color="#5eead4" stop-opacity="0"/></linearGradient></defs>${grids}<path class="area" d="${area}"/><path class="line" d="${line}"/>${points}${labels}`;
+    }
+
+    function renderRanking() {
+      const latest = dashboard.groups.map(g => ({name:g.name,value:g.history.at(-1)})).sort((a,b) => b.value-a.value).slice(0,8);
+      const max = latest[0].value || 1;
+      document.getElementById("ranking").innerHTML = latest.map((g,i) => `<div class="rank-row"><div class="rank-name">${i+1}. ${g.name}</div><div class="bar-track"><div class="bar" style="width:${g.value/max*100}%"></div></div><div class="bar-value">${g.value}</div></div>`).join("");
+    }
+
+    let activeFilter = "all";
+    function renderTable() {
+      const query = document.getElementById("search").value.trim().toLowerCase();
+      const rows = dashboard.groups.filter(g => {
+        const filterMatch = activeFilter === "all" || (activeFilter === "warning" ? g.warning : g.tier === activeFilter);
+        return filterMatch && g.name.toLowerCase().includes(query);
+      }).sort((a,b) => b.history.at(-1)-a.history.at(-1));
+      const tierClass = {"高活":"tier-high","活跃":"tier-active","低活":"tier-low","普通":"tier-normal"};
+      document.getElementById("groupRows").innerHTML = rows.map(g => {
+        const week = g.history.slice(-4);
+        const avg = (week.reduce((a,b) => a+b, 0)/week.length).toFixed(1);
+        return `<tr><td>${g.name}</td><td class="num">${g.size ?? '<span class="muted">未记录</span>'}</td>${week.map(v => `<td class="num">${v}</td>`).join("")}<td class="num">${avg}</td><td><span class="pill ${tierClass[g.tier]}">${g.tier}</span></td><td>${g.warning ? '<span class="warn">低活预警</span>' : '<span class="muted">—</span>'}</td></tr>`;
+      }).join("");
+      document.getElementById("tableFoot").textContent = `当前显示 ${rows.length} / ${dashboard.groups.length} 个社群 · “未记录”表示规模表中暂无可用人数`;
+    }
+
+    document.querySelectorAll(".filter").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll(".filter").forEach(item => item.classList.remove("active"));
+      button.classList.add("active"); activeFilter = button.dataset.filter; renderTable();
+    }));
+    document.getElementById("search").addEventListener("input", renderTable);
+    renderTrend(); renderRanking(); renderTable();
+  </script>
+</body>
+</html>
