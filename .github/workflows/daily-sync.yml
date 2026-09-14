@@ -1,0 +1,71 @@
+name: RedPet Dashboard Daily Sync
+
+on:
+  schedule:
+    # UTC 03:00 = 北京时间每天 11:00
+    - cron: '0 3 * * *'
+  workflow_dispatch:   # 允许在 GitHub 网页手动点一下就跑
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 拉取仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 准备 Node（企微 CLI 需要）
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装企微 CLI
+        run: |
+          mkdir -p "$HOME/.config/wecom"
+          npm install @wecom/cli --prefix "$HOME/wecomcli" 2>&1 | tail -3
+          echo "WECOM_NODE=$(which node)" >> $GITHUB_ENV
+
+      - name: 恢复企微登录凭证
+        env:
+          WECOM_CRED: ${{ secrets.WECOM_CREDENTIALS }}
+          WECOM_KEY: ${{ secrets.WECOM_ENCRYPTION_KEY }}
+        run: |
+          printf '%s' "$WECOM_CRED" | base64 -d > "$HOME/.config/wecom/credentials.enc"
+          printf '%s' "$WECOM_KEY"  | base64 -d > "$HOME/.config/wecom/.encryption_key"
+          chmod 600 "$HOME/.config/wecom/credentials.enc" "$HOME/.config/wecom/.encryption_key"
+          ls -l "$HOME/.config/wecom"
+
+      - name: 从企业微信在线表格取数并生成看板数据
+        env:
+          WECHAT_DOC_ACTIVITY: ${{ secrets.WECHAT_DOC_ACTIVITY }}
+          WECHAT_DOC_SIZES: ${{ secrets.WECHAT_DOC_SIZES }}
+        run: |
+          python work/wecom-sync/sync.py wecom
+
+      - name: 拷贝到发布目录 docs/
+        run: |
+          mkdir -p docs
+          for f in index.html dashboard-data.json assistant-icon.jpg \
+                   icon-32.png icon-180.png icon-192.png icon-512.png manifest.webmanifest; do
+            [ -f "dist/$f" ] && cp -f "dist/$f" "docs/$f"
+          done
+          ls -l docs
+
+      - name: 提交并推送
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "数据无变化，今日不提交"
+          else
+            git commit -m "daily sync $(date -u +%F)"
+            git push
+          fi
