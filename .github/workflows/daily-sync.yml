@@ -49,6 +49,8 @@ jobs:
           WECHAT_DOC_ACTIVITY: ${{ secrets.WECHAT_DOC_ACTIVITY }}
           WECHAT_DOC_SIZES: ${{ secrets.WECHAT_DOC_SIZES }}
         run: |
+          # 空目录不会被 git 跟踪，这里补建（sync.py 会往里写临时文件）
+          mkdir -p work/wecom-sync/input
           python work/wecom-sync/sync.py wecom
 
       - name: 拷贝到发布目录 docs/
