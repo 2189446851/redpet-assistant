@@ -29,7 +29,9 @@ jobs:
       - name: 安装企微 CLI
         run: |
           mkdir -p "$HOME/.config/wecom"
-          npm install @wecom/cli --prefix "$HOME/wecomcli" 2>&1 | tail -3
+          # 必须装到 sync.py 期望的路径 work/wecom-cli-runtime/node_modules/...
+          npm install @wecom/cli --prefix work/wecom-cli-runtime 2>&1 | tail -3
+          ls -l work/wecom-cli-runtime/node_modules/@wecom/cli/bin/wecom.js
           echo "WECOM_NODE=$(which node)" >> $GITHUB_ENV
 
       - name: 恢复企微登录凭证
