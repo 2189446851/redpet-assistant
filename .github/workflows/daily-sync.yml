@@ -51,7 +51,18 @@ jobs:
         run: |
           # 空目录不会被 git 跟踪，这里补建（sync.py 会往里写临时文件）
           mkdir -p work/wecom-sync/input
-          python work/wecom-sync/sync.py wecom
+          # GitHub 服务器在国外访问企微，偶发网络抖动，失败自动重试 3 次
+          for i in 1 2 3; do
+            echo "===== 第 $i 次尝试 ====="
+            if python work/wecom-sync/sync.py wecom; then
+              echo "✅ 取数成功"
+              exit 0
+            fi
+            echo "⚠️ 第 $i 次失败，25 秒后重试"
+            sleep 25
+          done
+          echo "❌ 3 次均失败"
+          exit 1
 
       - name: 拷贝到发布目录 docs/
         run: |
