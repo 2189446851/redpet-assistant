@@ -3,338 +3,69 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#080d18" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23080d18'/%3E%3Cpath d='M14 43V30h8v13zm14 0V20h8v23zm14 0V11h8v32z' fill='%235EEAD4'/%3E%3C/svg%3E" />
-  <title>社群数据看板</title>
+  <meta name="theme-color" content="#fff4c9" />
+  <meta name="description" content="一只薯社群助手：AI小助手与社群活跃数据看板。" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FF6F59'/%3E%3Ccircle cx='21' cy='23' r='7' fill='white'/%3E%3Ccircle cx='43' cy='23' r='7' fill='white'/%3E%3Ccircle cx='14' cy='36' r='6' fill='white'/%3E%3Ccircle cx='50' cy='36' r='6' fill='white'/%3E%3Cpath d='M32 31c-10 0-16 8-13 16 2 6 8 7 13 4 5 3 11 2 13-4 3-8-3-16-13-16z' fill='white'/%3E%3C/svg%3E" />
+  <title>一只薯社群助手</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #070b14;
-      --panel: #0d1422;
-      --panel-2: #111a2a;
-      --line: rgba(148, 163, 184, .14);
-      --muted: #8b9bb1;
-      --text: #f6f8fb;
-      --cyan: #5eead4;
-      --blue: #60a5fa;
-      --purple: #a78bfa;
-      --orange: #fb923c;
-      --red: #fb7185;
-      --slate: #64748b;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      min-width: 320px;
-      background:
-        radial-gradient(circle at 18% -10%, rgba(94,234,212,.08), transparent 30%),
-        radial-gradient(circle at 86% 8%, rgba(96,165,250,.08), transparent 24%),
-        var(--bg);
-      color: var(--text);
-      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-      font-size: 14px;
-    }
-    button, input { font: inherit; }
-    .shell { max-width: 1460px; margin: 0 auto; padding: 0 28px 52px; }
-    header {
-      height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--line);
-    }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 760; letter-spacing: -.02em; }
-    .mark {
-      width: 34px; height: 34px; border-radius: 10px;
-      display: grid; place-items: center;
-      background: linear-gradient(145deg, #1b3345, #10253b);
-      border: 1px solid rgba(94,234,212,.25);
-      box-shadow: inset 0 0 18px rgba(94,234,212,.08);
-    }
-    .mark svg { width: 19px; height: 19px; }
-    .actions { display: flex; align-items: center; gap: 10px; }
-    .badge, .tag {
-      display: inline-flex; align-items: center; gap: 7px;
-      border: 1px solid var(--line); border-radius: 999px;
-      color: #b8c4d5; background: rgba(255,255,255,.025);
-      padding: 7px 11px; font-size: 12px;
-    }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px rgba(94,234,212,.7); }
-    .agent {
-      display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
-      border-radius: 10px; color: #061018; background: var(--cyan);
-      text-decoration: none; font-weight: 720; transition: transform .18s, box-shadow .18s;
-    }
-    .agent:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(94,234,212,.18); }
-    .intro { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 38px 0 24px; }
-    .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
-    h1 { margin: 9px 0 8px; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; line-height: 1.06; }
-    .intro p { margin: 0; color: var(--muted); max-width: 680px; line-height: 1.7; }
-    .period { color: #cbd5e1; white-space: nowrap; padding-bottom: 3px; }
-    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .card {
-      background: linear-gradient(180deg, rgba(17,26,42,.92), rgba(12,19,32,.96));
-      border: 1px solid var(--line); border-radius: 16px;
-      box-shadow: 0 16px 42px rgba(0,0,0,.14);
-    }
-    .kpi { padding: 19px 20px; min-height: 126px; position: relative; overflow: hidden; }
-    .kpi::after { content: ""; position: absolute; inset: auto -34px -48px auto; width: 110px; height: 110px; border: 18px solid var(--accent); opacity: .055; border-radius: 50%; }
-    .kpi .label { color: var(--muted); font-size: 12px; }
-    .kpi .value { margin: 12px 0 8px; font-size: 31px; line-height: 1; font-weight: 780; letter-spacing: -.04em; }
-    .kpi .value small { font-size: 13px; color: var(--muted); font-weight: 550; margin-left: 4px; }
-    .kpi .foot { font-size: 12px; color: #aebacc; }
-    .kpi .foot strong { color: var(--accent); }
-    .main-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, .85fr); gap: 14px; margin-top: 14px; }
-    .panel { padding: 20px; }
-    .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
-    .panel h2 { font-size: 16px; margin: 0 0 5px; letter-spacing: -.015em; }
-    .sub { color: var(--muted); font-size: 12px; }
-    .chart-wrap { min-height: 262px; position: relative; }
-    #trend { width: 100%; height: 260px; overflow: visible; }
-    .axis-label { fill: #75859b; font-size: 11px; }
-    .gridline { stroke: rgba(148,163,184,.11); stroke-width: 1; }
-    .line { fill: none; stroke: url(#lineGradient); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-    .area { fill: url(#areaGradient); }
-    .point { fill: #0d1422; stroke: var(--cyan); stroke-width: 2.5; }
-    .donut-box { display: grid; place-items: center; min-height: 204px; }
-    .donut {
-      width: 172px; aspect-ratio: 1; border-radius: 50%;
-      background: conic-gradient(var(--blue) 0 15.79%, #263247 15.79% 100%);
-      display: grid; place-items: center; position: relative;
-      box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 0 40px rgba(96,165,250,.07);
-    }
-    .donut::after { content: ""; width: 116px; aspect-ratio: 1; border-radius: 50%; background: #0d1523; box-shadow: inset 0 0 0 1px var(--line); }
-    .donut-copy { position: absolute; z-index: 1; text-align: center; }
-    .donut-copy strong { display: block; font-size: 32px; letter-spacing: -.05em; }
-    .donut-copy span { color: var(--muted); font-size: 11px; }
-    .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
-    .legend-item { display: flex; justify-content: space-between; align-items: center; color: #b9c5d4; font-size: 12px; }
-    .legend-name { display: flex; align-items: center; gap: 8px; }
-    .swatch { width: 8px; height: 8px; border-radius: 3px; }
-    .middle-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 14px; margin-top: 14px; }
-    .rank-list { display: grid; gap: 13px; }
-    .rank-row { display: grid; grid-template-columns: minmax(110px, 1.15fr) 2.3fr 36px; align-items: center; gap: 12px; }
-    .rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c7d2e1; font-size: 12px; }
-    .bar-track { height: 7px; border-radius: 999px; background: #1c2737; overflow: hidden; }
-    .bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), var(--cyan)); box-shadow: 0 0 10px rgba(94,234,212,.18); }
-    .bar-value { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; color: #e5eaf2; }
-    .rule-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
-    .rule {
-      border: 1px solid var(--line); background: rgba(255,255,255,.018); border-radius: 12px; padding: 13px 12px; min-height: 91px;
-      position: relative;
-    }
-    .rule:not(:last-child)::after { content: "→"; position: absolute; right: -9px; top: 35px; z-index: 2; color: #617087; font-size: 13px; }
-    .rule strong { display: block; margin-bottom: 8px; font-size: 13px; }
-    .rule span { color: var(--muted); font-size: 11px; line-height: 1.5; }
-    .notice { display: flex; gap: 11px; margin-top: 12px; border: 1px solid rgba(251,146,60,.2); background: rgba(251,146,60,.055); color: #d7c4b5; padding: 12px 13px; border-radius: 12px; font-size: 12px; line-height: 1.55; }
-    .notice b { color: #fdba74; white-space: nowrap; }
-    .table-panel { margin-top: 14px; padding: 0; overflow: hidden; }
-    .table-toolbar { padding: 19px 20px 15px; display: flex; justify-content: space-between; align-items: center; gap: 14px; border-bottom: 1px solid var(--line); }
-    .filters { display: flex; flex-wrap: wrap; gap: 7px; }
-    .filter {
-      border: 1px solid var(--line); color: #98a8bb; background: rgba(255,255,255,.018);
-      border-radius: 8px; padding: 7px 10px; cursor: pointer; transition: .15s;
-    }
-    .filter:hover, .filter.active { color: #eef5ff; border-color: rgba(94,234,212,.35); background: rgba(94,234,212,.08); }
-    .search {
-      width: 220px; max-width: 40vw; border: 1px solid var(--line); background: #0b1220; color: var(--text);
-      border-radius: 9px; padding: 8px 11px; outline: none;
-    }
-    .search:focus { border-color: rgba(94,234,212,.45); }
-    .table-scroll { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 870px; }
-    th, td { padding: 13px 20px; text-align: left; border-bottom: 1px solid rgba(148,163,184,.09); white-space: nowrap; }
-    th { color: #77879c; font-size: 11px; font-weight: 620; letter-spacing: .04em; background: rgba(255,255,255,.012); }
-    td { color: #c8d2df; font-size: 12px; }
-    tbody tr:hover { background: rgba(255,255,255,.018); }
-    .num { font-variant-numeric: tabular-nums; }
-    .pill { display: inline-flex; align-items: center; justify-content: center; min-width: 49px; padding: 5px 8px; border-radius: 999px; font-size: 11px; border: 1px solid transparent; }
-    .tier-high { color: #d8ccff; background: rgba(167,139,250,.11); border-color: rgba(167,139,250,.2); }
-    .tier-active { color: #a8cdfc; background: rgba(96,165,250,.11); border-color: rgba(96,165,250,.2); }
-    .tier-low { color: #fecdd3; background: rgba(251,113,133,.1); border-color: rgba(251,113,133,.2); }
-    .tier-normal { color: #b5c0ce; background: rgba(100,116,139,.11); border-color: rgba(100,116,139,.2); }
-    .warn { color: #fdba74; display: inline-flex; gap: 6px; align-items: center; }
-    .warn::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px rgba(251,146,60,.6); }
-    .muted { color: #64748b; }
-    .table-foot { padding: 13px 20px 17px; color: #68788d; font-size: 11px; }
-    footer { display: flex; justify-content: space-between; gap: 16px; color: #58687e; font-size: 11px; padding-top: 18px; }
-    @media (max-width: 980px) {
-      .kpis { grid-template-columns: 1fr 1fr; }
-      .main-grid, .middle-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 640px) {
-      .shell { padding: 0 16px 34px; }
-      header { height: 66px; }
-      .badge { display: none; }
-      .intro { align-items: flex-start; flex-direction: column; padding-top: 28px; }
-      .period { white-space: normal; }
-      .kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .kpi { min-height: 116px; padding: 16px; }
-      .kpi .value { font-size: 27px; }
-      .rule-flow { grid-template-columns: 1fr 1fr; }
-      .rule:not(:last-child)::after { display: none; }
-      .table-toolbar { align-items: flex-start; flex-direction: column; }
-      .search { width: 100%; max-width: none; }
-      footer { flex-direction: column; }
-    }
+    :root{color-scheme:light;--bg:#fff8df;--surface:#fffefa;--line:#eadcb8;--text:#1d2433;--muted:#756b5d;--blue:#315bc6;--blue-dark:#274ba7;--blue-soft:#eef3ff;--purple:#3caf8f;--green:#239371;--orange:#ed8a37;--red:#f15e4b;--shadow:0 12px 28px rgba(86,65,30,.09)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px;background:linear-gradient(180deg,#fff4c9 0,#fff9e8 30%,#f5f9ff 100%);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:16px;line-height:1.5}button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}.shell{max-width:1380px;margin:0 auto;padding:0 28px 52px}
+    .site-header{min-height:76px;display:flex;align-items:center;border-bottom:1px solid rgba(203,157,56,.28)}.brand{display:inline-flex;align-items:center;gap:12px;color:var(--text);text-decoration:none;font-weight:800;letter-spacing:-.025em}.mark{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#ff765f,#ef5645);box-shadow:0 8px 18px rgba(241,94,75,.23)}.mark svg{width:21px;height:21px}
+    .page{padding-top:34px}.eyebrow{margin:0 0 9px;color:var(--blue-dark);font-size:13px;font-weight:760;letter-spacing:.06em}h1,h2,h3,p{margin-top:0}h1{margin-bottom:10px;font-size:clamp(30px,4vw,44px);line-height:1.12;letter-spacing:-.045em}
+    .entry-grid{display:grid;grid-template-columns:.88fr 1.12fr;gap:20px}.entry-card{min-height:270px;padding:30px;display:flex;flex-direction:column;border:1px solid var(--entry-border,var(--line));border-radius:26px;background:var(--entry-bg,var(--surface));color:var(--entry-text,var(--text));box-shadow:var(--shadow);overflow:hidden;position:relative}.entry-card::after{content:"";width:210px;height:210px;position:absolute;right:-72px;top:-88px;border-radius:50%;background:var(--entry-halo);opacity:.92}.entry-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:18px;color:var(--entry-icon-color,var(--entry-color));background:var(--entry-soft);position:relative;z-index:1}.entry-icon svg{width:28px;height:28px}.entry-card h2{margin:24px 0 8px;font-size:24px;letter-spacing:-.025em}.entry-card>p{max-width:500px;margin-bottom:20px;color:var(--entry-copy,var(--muted));font-size:15px}.entry-details{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}.detail-chip{padding:6px 9px;border-radius:8px;color:#5f584c;background:rgba(255,255,255,.68);font-size:13px}.entry-action{width:fit-content;margin-top:auto;display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;padding:12px 17px;color:var(--entry-action-text,#fff);background:var(--entry-color);text-decoration:none;font-weight:760;cursor:pointer;box-shadow:0 6px 14px rgba(48,45,38,.12)}.entry-action:hover{filter:brightness(.97);transform:translateY(-1px)}
+    .dashboard-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:18px}.dashboard-head h1{margin-bottom:7px;font-size:clamp(28px,3vw,36px)}.dashboard-meta{color:var(--muted);font-size:14px}.back-button{border:1px solid #e0c777;border-radius:10px;padding:9px 12px;color:#66531f;background:#fff8dc;cursor:pointer;font-size:14px;font-weight:680}.rules-inline{margin-bottom:16px;padding:11px 14px;border-left:4px solid var(--green);border-radius:8px;color:#5d584f;background:#f0faf5;font-size:13px;line-height:1.65}.rules-inline strong{color:#176b50;margin-right:10px}.rules-inline .warning-copy{color:#a9500d;margin-left:10px}.dashboard-tabs{display:flex;gap:8px;overflow-x:auto;margin:0 0 16px;padding-bottom:2px}.dashboard-tab{flex:0 0 auto;border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:#5c584f;background:#fffefa;cursor:pointer;font-size:14px;font-weight:720}.dashboard-tab.active{border-color:#315bc6;color:#fff;background:#315bc6;box-shadow:0 6px 14px rgba(49,91,198,.2)}.dashboard-section>.section-intro{margin:0 0 14px;color:var(--muted);font-size:14px}
+    .card{border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:0 7px 20px rgba(83,65,34,.055)}.tier-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.tier-card{padding:18px;border-top:5px solid var(--tier-color)}.tier-label{color:#5f5a50;font-size:14px;font-weight:700}.tier-number{display:flex;align-items:baseline;gap:6px;margin:10px 0 7px}.tier-number strong{color:var(--tier-color);font-size:34px;line-height:1;letter-spacing:-.045em}.tier-number span,.tier-card small{color:#7a7469}.tier-card small{font-size:12px}
+    .focus-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px;margin-top:14px}.focus-card{padding:20px;border-left:4px solid var(--focus-color)}.focus-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.focus-head h2{margin:0;font-size:17px}.focus-count{color:var(--focus-color);font-size:13px;font-weight:760}.focus-copy{margin-bottom:12px;color:var(--muted);font-size:13px;line-height:1.65}.focus-list{display:flex;flex-wrap:wrap;gap:7px}.group-chip{display:inline-flex;padding:7px 9px;border-radius:8px;color:var(--chip-text);background:var(--chip-bg);font-size:12px;font-weight:680}.focus-divider{height:1px;margin:14px 0 12px;background:var(--line)}.focus-note{margin:0;color:#526176;font-size:12px}
+    .trend-grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(340px,.97fr);gap:14px;margin-top:14px}.panel{padding:20px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}.panel-head h2{margin:0 0 4px;font-size:17px}.sub{color:var(--muted);font-size:12px}.tag{padding:6px 9px;border-radius:999px;color:var(--tag-color);background:var(--tag-bg);font-size:12px;font-weight:700;white-space:nowrap}.line-chart{height:240px;padding:8px 2px 0;border-bottom:1px solid #dce3ee}.line-chart svg{width:100%;height:100%;overflow:visible}.line-grid{stroke:#e7ebf2;stroke-width:1}.line-fill{fill:rgba(49,91,198,.11)}.line-path{fill:none;stroke:#315bc6;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.line-dot{fill:#fffefa;stroke:#315bc6;stroke-width:2.5}.line-label{fill:#697586;font-size:10px}.line-value{fill:#315bc6;font-size:10px;font-weight:700}.chart-note{margin:13px 0 0;color:#78869a;font-size:12px;line-height:1.55}.change-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}.change-title{margin-bottom:10px;color:#526176;font-size:13px;font-weight:720}.change-list{display:grid;gap:9px}.change-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid #edf1f6;color:#334155;font-size:13px}.delta-up{color:var(--green);font-weight:740}.delta-down{color:var(--red);font-weight:740}.muted{color:#7d899b}
+    .table-panel{margin-top:14px;overflow:hidden}.table-toolbar{padding:19px 20px 15px;display:flex;justify-content:space-between;align-items:center;gap:14px;border-bottom:1px solid var(--line)}.table-title{margin:0 0 10px;font-size:17px}.detail-tabs{display:flex;gap:7px;margin-bottom:12px}.detail-tab{border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:#696154;background:#fffefa;cursor:pointer;font-size:13px;font-weight:720}.detail-tab.active{border-color:#315bc6;color:#fff;background:#315bc6}.filters{display:flex;flex-wrap:wrap;gap:7px}.filter{border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:#696154;background:#fffefa;cursor:pointer;font-size:13px}.filter:hover,.filter.active{color:#176b50;border-color:#8fd0ba;background:#edf9f4}.search{width:220px;max-width:40vw;border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);background:#fffefa;outline:none;font-size:14px}.search:focus{border-color:#53b497;box-shadow:0 0 0 3px rgba(67,176,143,.1)}.table-scroll{overflow-x:auto}table{width:100%;min-width:1000px;border-collapse:collapse}th,td{padding:13px 18px;text-align:left;border-bottom:1px solid #efe7d3;white-space:nowrap}th{color:#696154;background:#fff9e9;font-size:12px;font-weight:690}td{color:#334155;font-size:13px}tbody tr:hover{background:#fffcf3}.num{font-variant-numeric:tabular-nums}.activity-value{display:inline-flex;align-items:baseline;gap:3px;color:#1f57c8;font-size:20px;font-weight:800;letter-spacing:-.03em}.activity-value small{color:#6e7b8f;font-size:11px;font-weight:650}.pill{display:inline-flex;align-items:center;justify-content:center;min-width:50px;padding:5px 8px;border:1px solid transparent;border-radius:999px;font-size:12px}.tier-high{color:#176b50;background:#e8f8f1;border-color:#bfe8d8}.tier-active{color:#274ba7;background:#e8efff;border-color:#c8d7ff}.tier-low{color:#b93b2b;background:#fff0ed;border-color:#ffcfc7}.tier-normal{color:#916018;background:#fff6d8;border-color:#f2dda0}.warn{display:inline-flex;align-items:center;gap:6px;color:#a8510c}.warn::before{content:"";width:6px;height:6px;border-radius:50%;background:#ed8a37}.row-low{background:#fff8f6}.row-low td:first-child{box-shadow:inset 3px 0 var(--red)}.row-warning{background:#fffbec}.row-warning td:first-child{box-shadow:inset 3px 0 var(--orange)}.row-active{background:#f5f8ff}.row-active td:first-child{box-shadow:inset 3px 0 var(--blue)}.change-cell{font-weight:730}.empty-row td{padding:38px 20px;text-align:center;color:#8f897e}.table-foot{padding:13px 20px 17px;color:#756f64;font-size:12px}.loading-card{padding:28px;color:var(--muted);text-align:center}.error-box{margin-top:20px;padding:18px;border:1px solid #f3c7bf;border-radius:12px;color:#9d3729;background:#fff5f2}footer{display:flex;justify-content:space-between;gap:16px;padding-top:20px;color:#746d61;font-size:12px}
+    @media(max-width:980px){.entry-grid,.focus-grid,.trend-grid{grid-template-columns:1fr}.tier-summary{grid-template-columns:1fr 1fr}}@media(max-width:680px){.shell{padding:0 14px 30px}.site-header{min-height:64px}.brand{gap:10px;font-size:15px}.mark{width:36px;height:36px}.page{padding-top:20px}.dashboard-head{align-items:flex-start;flex-direction:column;gap:12px}.dashboard-head h1{font-size:28px}.back-button{width:100%}.dashboard-tabs{margin-bottom:14px}.dashboard-tab{padding:9px 13px}.entry-card{min-height:238px;padding:22px;border-radius:21px}.entry-card h2{font-size:22px}.entry-action{width:100%;justify-content:center}.tier-summary{gap:8px}.tier-card{padding:14px}.tier-number strong{font-size:29px}.rules-inline strong,.rules-inline .warning-copy{display:block;margin:0}.focus-card,.panel{padding:16px}.half-chart{height:210px;padding-inline:0;gap:5px}.half-bar{min-width:34px}.half-label{white-space:normal}.change-columns{grid-template-columns:1fr}.table-panel{overflow:visible}.table-toolbar{align-items:flex-start;flex-direction:column;padding:16px}.search{width:100%;max-width:none}.table-scroll{overflow:visible}table{display:block;min-width:0;padding:0 10px 12px}thead{display:none}tbody{display:grid;gap:10px}tbody tr{display:block;border:1px solid var(--line);border-radius:14px;padding:7px 11px;background:#fffefa;overflow:hidden}tbody td{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 3px;border-bottom:1px solid #f0e7d3;white-space:normal;text-align:right}tbody td::before{content:attr(data-label);color:#7b7264;font-size:12px;font-weight:680;text-align:left}tbody td:first-child{font-weight:760;text-align:left;box-shadow:none!important}tbody td:first-child::before{content:""}tbody td:last-child{border-bottom:0}.empty-row td{display:block;padding:28px 8px;text-align:center}.empty-row td::before{display:none}.table-foot{padding-inline:14px}footer{flex-direction:column}}
   </style>
 </head>
 <body>
   <div class="shell">
-    <header>
-      <div class="brand">
-        <span class="mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 18v-6h4v6m4 0V7h4v11m4 0V3" stroke="#5eead4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <span>社群数据看板</span>
-      </div>
-      <div class="actions">
-        <span class="badge"><i class="dot"></i>样本数据 · 已更新</span>
-        <a class="agent" href="https://85f1e52efce24789a536645bf50ca68f.app.workbuddy.link" target="_blank" rel="noreferrer">Agent 助手 <span aria-hidden="true">↗</span></a>
-      </div>
+    <header class="site-header">
+      <a class="brand" href="#home" data-view-link="home" aria-label="返回首页"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="2.3" fill="currentColor"/><circle cx="16" cy="8" r="2.3" fill="currentColor"/><circle cx="5.5" cy="13" r="2" fill="currentColor"/><circle cx="18.5" cy="13" r="2" fill="currentColor"/><path d="M12 11.5c-4.1 0-6.4 3.1-5.2 6.1.9 2.3 3.1 2.7 5.2 1.5 2.1 1.2 4.3.8 5.2-1.5 1.2-3-1.1-6.1-5.2-6.1Z" fill="currentColor"/></svg></span><span>一只薯社群助手</span></a>
     </header>
-
     <main>
-      <section class="intro">
-        <div>
-          <div class="eyebrow">Community Pulse</div>
-          <h1>社群活跃，一眼看清</h1>
-          <p>汇总每日活跃人数，按固定优先级生成每周唯一档位；预警与正式档位分开显示，避免单日波动造成误判。</p>
+      <section id="homeView" class="page">
+        <div class="entry-grid">
+          <article class="entry-card" style="--entry-bg:#ff765f;--entry-border:#e95b48;--entry-text:#202020;--entry-color:#22252b;--entry-action-text:#fff;--entry-icon-color:#e75340;--entry-soft:#fff5df;--entry-halo:#ffd68d"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 18.5 3.5 20l1.2-3.7A8.3 8.3 0 1 1 7 18.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><h2>AI小助手</h2><a class="entry-action" href="https://85f1e52efce24789a536645bf50ca68f.app.workbuddy.link" target="_blank" rel="noopener noreferrer">打开 AI小助手 <span aria-hidden="true">↗</span></a></article>
+          <article class="entry-card" style="--entry-bg:#ffe99c;--entry-border:#e6ca68;--entry-text:#20242f;--entry-color:#315bc6;--entry-soft:#fffaf0;--entry-halo:#43b08f;--entry-copy:#665c41"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V11h4v8m4 0V6h4v13m4 0V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群数据看板</h2><button class="entry-action" type="button" data-view-link="dashboard">查看数据看板 <span aria-hidden="true">→</span></button></article>
         </div>
-        <div class="period">统计周期：9 月 7 日—9 月 10 日 · 4 个有效日</div>
+        <div id="homeError" class="error-box" hidden></div>
       </section>
-
-      <section class="kpis" aria-label="核心数据">
-        <article class="card kpi" style="--accent: var(--cyan)"><div class="label">9 月 10 日活跃人数</div><div class="value">98<small>人次</small></div><div class="foot">较前一有效日 <strong>+21.0%</strong></div></article>
-        <article class="card kpi" style="--accent: var(--blue)"><div class="label">本周活跃档</div><div class="value">3<small>个群</small></div><div class="foot">占监测社群 <strong>15.8%</strong></div></article>
-        <article class="card kpi" style="--accent: var(--orange)"><div class="label">低活预警</div><div class="value">7<small>个群</small></div><div class="foot">连续 4 个有效日低于 5 人</div></article>
-        <article class="card kpi" style="--accent: var(--purple)"><div class="label">监测社群</div><div class="value">19<small>个群</small></div><div class="foot">规模数据可匹配 <strong>15 个群</strong></div></article>
-      </section>
-
-      <section class="main-grid">
-        <article class="card panel">
-          <div class="panel-head"><div><h2>每日活跃人数趋势</h2><div class="sub">最近 8 个有效统计日 · 合计人次</div></div><span class="tag">峰值 98</span></div>
-          <div class="chart-wrap"><svg id="trend" role="img" aria-label="最近八个有效统计日的活跃人数趋势"></svg></div>
-        </article>
-        <article class="card panel">
-          <div class="panel-head"><div><h2>本周社群分档</h2><div class="sub">互斥分类 · 每群只计入一档</div></div></div>
-          <div class="donut-box"><div class="donut"><div class="donut-copy"><strong>19</strong><span>监测社群</span></div></div></div>
-          <div class="legend">
-            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:var(--purple)"></i>高活</span><strong>0</strong></div>
-            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:var(--blue)"></i>活跃</span><strong>3</strong></div>
-            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:var(--red)"></i>低活</span><strong>0</strong></div>
-            <div class="legend-item"><span class="legend-name"><i class="swatch" style="background:#263247"></i>普通</span><strong>16</strong></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="middle-grid">
-        <article class="card panel">
-          <div class="panel-head"><div><h2>9 月 10 日活跃排行</h2><div class="sub">按当日活跃人数降序 · TOP 8</div></div></div>
-          <div id="ranking" class="rank-list"></div>
-        </article>
-        <article class="card panel">
-          <div class="panel-head"><div><h2>每周判定规则</h2><div class="sub">严格按从左到右的优先级命中</div></div></div>
-          <div class="rule-flow">
-            <div class="rule"><strong style="color:#c4b5fd">高活</strong><span>至少 3 日<br>≥ 20 人</span></div>
-            <div class="rule"><strong style="color:#93c5fd">活跃</strong><span>至少 3 日<br>≥ 10 人</span></div>
-            <div class="rule"><strong style="color:#fda4af">低活</strong><span>完整周期<br>每日 &lt; 5 人</span></div>
-            <div class="rule"><strong style="color:#b6c2d0">普通</strong><span>其余全部<br>社群</span></div>
-          </div>
-          <div class="notice"><b>预警单列</b><span>连续 3—4 个有效统计日低于 5 人，只加“低活预警”标签，四档中仍归普通。</span></div>
-        </article>
-      </section>
-
-      <section class="card table-panel">
-        <div class="table-toolbar">
-          <div><h2 style="margin:0 0 10px;font-size:16px">社群明细</h2><div class="filters" role="group" aria-label="筛选社群"><button class="filter active" data-filter="all">全部 19</button><button class="filter" data-filter="活跃">活跃 3</button><button class="filter" data-filter="普通">普通 16</button><button class="filter" data-filter="warning">低活预警 7</button></div></div>
-          <input id="search" class="search" type="search" placeholder="搜索群名称" aria-label="搜索群名称" />
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>社群</th><th>群规模</th><th>9/7</th><th>9/8</th><th>9/9</th><th>9/10</th><th>本周日均</th><th>周档位</th><th>风险标签</th></tr></thead>
-            <tbody id="groupRows"></tbody>
-          </table>
-        </div>
-        <div id="tableFoot" class="table-foot"></div>
+      <section id="dashboardView" class="page" hidden>
+        <div class="dashboard-head"><div><p class="eyebrow">社群活跃度</p><h1>社群数据看板</h1><div class="dashboard-meta" id="dashboardMeta">正在读取企业微信在线数据</div></div><button class="back-button" type="button" data-view-link="home">← 返回首页</button></div>
+        <div class="rules-inline"><strong>最近 5 个有效统计日规则</strong>高活：至少 3 日 ≥20 人；活跃：至少 3 日 ≥10 人；低活：连续 5 日每日 &lt;5 人；其余为普通。<span class="warning-copy">按高活 → 活跃 → 低活 → 普通依次判定；连续 3—4 日 &lt;5 人仅标记预警。</span></div>
+        <nav class="dashboard-tabs" aria-label="数据看板页面"><button class="dashboard-tab" type="button" data-dashboard-link="overview">数据总览</button><button class="dashboard-tab" type="button" data-dashboard-link="trends">趋势分析</button><button class="dashboard-tab" type="button" data-dashboard-link="groups">社群明细</button></nav>
+        <div id="dashboardLoading" class="card loading-card">正在整理最新社群数据…</div>
+        <div id="dashboardContent" hidden>
+          <div class="dashboard-section" data-dashboard-section="overview"><p class="section-intro">先看最近 5 个有效统计日的四档分布，再优先处理正式低活与低活预警社群。</p><section id="tierSummary" class="tier-summary" aria-label="最近 5 个有效统计日四档汇总"></section>
+          <section class="focus-grid"><article class="card focus-card" style="--focus-color:#2c9d7a;--chip-bg:#e8f8f1;--chip-text:#176b50"><div class="focus-head"><h2>高活与冲高社群</h2><span class="focus-count" id="highCount"></span></div><p class="focus-copy" id="highCopy"></p><div class="focus-list" id="highList"></div><div class="focus-divider"></div><p class="focus-note">下一步：复用高参与话题，为活跃社群安排一次集中活动，争取一周出现 3 个 20+ 活跃日。</p></article><article class="card focus-card" style="--focus-color:#f15e4b;--chip-bg:#fff0ed;--chip-text:#b93b2b"><div class="focus-head"><h2>低活与预警社群</h2><span class="focus-count" id="lowCount"></span></div><p class="focus-copy" id="lowCopy"></p><div class="focus-list" id="lowList"></div><div class="focus-divider"></div><p class="focus-note" id="warningCopy"></p></article></section>
+          </div><div class="dashboard-section" data-dashboard-section="trends" hidden><p class="section-intro">用折线查看最近 15 个有效统计日的整体活跃变化，并找出半月变化最明显的社群。</p><section class="trend-grid"><article class="card panel"><div class="panel-head"><div><h2>全社群活跃趋势</h2><div class="sub">每日全社群活跃人次合计</div></div><span class="tag" id="trendTag"></span></div><div class="line-chart" id="lineChart" role="img" aria-label="全社群活跃趋势折线图"></div><p class="chart-note" id="chartNote"></p></article><article class="card panel"><div class="panel-head"><div><h2>半月变化最大的社群</h2><div class="sub" id="changeSubtitle"></div></div></div><div class="change-columns"><div><div class="change-title">上升最快</div><div class="change-list" id="risingList"></div></div><div><div class="change-title">下降明显</div><div class="change-list" id="fallingList"></div></div></div></article></section></div>
+          <div class="dashboard-section" data-dashboard-section="groups" hidden><p class="section-intro">先从“活跃重点”处理需要动作的社群；历史日均数据单独放在第二页。</p><section class="card table-panel"><div class="table-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="detail-tabs" role="tablist" aria-label="社群明细页面"><button class="detail-tab active" type="button" data-detail-link="focus">活跃重点</button><button class="detail-tab" type="button" data-detail-link="history">历史数据</button></div><div class="filters" id="filters" role="group" aria-label="筛选社群"></div></div><input id="search" class="search" type="search" placeholder="搜索群名称" aria-label="搜索群名称" /></div><div id="focusTablePanel"><div class="table-scroll"><table><thead><tr id="focusTableHead"></tr></thead><tbody id="focusGroupRows"></tbody></table></div><div id="focusTableFoot" class="table-foot"></div></div><div id="historyTablePanel" hidden><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section></div>
+        </div><div id="dashboardError" class="error-box" hidden></div>
       </section>
     </main>
-
-    <footer><span>数据来源：导出的企业微信在线表格 · 原型尚未自动同步</span><span>正式接入方案：企业微信官方 CLI 扫码授权</span></footer>
+    <footer><span>数据来源：企业微信在线表格</span><span>近 5 个有效统计日唯一归档，低活预警单独标记</span></footer>
   </div>
-
   <script>
-    const dashboard = {
-      dates: ["9.1","9.2","9.3","9.4","9.7","9.8","9.9","9.10"],
-      totals: [93,72,59,88,81,98,81,98],
-      groups: [
-        {name:"猫猫托儿所1群",size:499,history:[3,2,5,1,3,3,7,7],tier:"普通",warning:false},
-        {name:"猫猫托儿所2群",size:434,history:[2,5,3,2,3,5,4,5],tier:"普通",warning:false},
-        {name:"猫猫托儿所3群",size:null,history:[0,0,0,0,0,0,0,0],tier:"普通",warning:true},
-        {name:"猫猫总裁办1群",size:500,history:[4,2,2,0,10,5,6,6],tier:"普通",warning:false},
-        {name:"猫猫总裁办2群",size:500,history:[5,2,1,2,2,2,2,9],tier:"普通",warning:false},
-        {name:"猫猫总裁办3群",size:472,history:[2,1,2,1,3,4,3,2],tier:"普通",warning:true},
-        {name:"猫猫总裁办4群",size:487,history:[5,5,1,6,8,7,5,4],tier:"普通",warning:false},
-        {name:"猫猫总裁办5群",size:310,history:[13,5,2,12,10,12,3,4],tier:"普通",warning:false},
-        {name:"猫猫总裁办6群",size:null,history:[0,0,0,0,0,0,0,0],tier:"普通",warning:true},
-        {name:"猫猫养老院1群",size:483,history:[2,0,0,0,0,3,1,1],tier:"普通",warning:true},
-        {name:"狗狗托儿所",size:431,history:[3,3,0,5,2,7,4,2],tier:"普通",warning:false},
-        {name:"狗狗托儿所2群",size:null,history:[0,0,0,0,0,0,0,2],tier:"普通",warning:true},
-        {name:"狗狗总裁办1群",size:499,history:[4,2,2,5,1,1,2,3],tier:"普通",warning:true},
-        {name:"狗狗总裁办2群",size:500,history:[11,11,10,15,10,13,10,10],tier:"活跃",warning:false},
-        {name:"狗狗养老院",size:294,history:[4,4,1,6,2,5,3,3],tier:"普通",warning:false},
-        {name:"科学养宠社1群",size:497,history:[7,2,8,3,8,6,6,8],tier:"普通",warning:false},
-        {name:"户外遛宠社",size:424,history:[13,16,12,20,11,15,15,20],tier:"活跃",warning:false},
-        {name:"户外遛宠社2群",size:null,history:[0,0,0,0,0,0,0,0],tier:"普通",warning:true},
-        {name:"萌宠美颜社",size:322,history:[15,12,10,10,8,10,10,12],tier:"活跃",warning:false}
-      ]
-    };
-
-    function renderTrend() {
-      const svg = document.getElementById("trend");
-      const W = 760, H = 260, pad = {l:35,r:20,t:18,b:34};
-      const min = 50, max = 105;
-      const x = i => pad.l + i * (W-pad.l-pad.r)/(dashboard.totals.length-1);
-      const y = v => pad.t + (max-v)*(H-pad.t-pad.b)/(max-min);
-      const pts = dashboard.totals.map((v,i) => [x(i),y(v)]);
-      const line = pts.map((p,i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
-      const area = `${line} L${pts.at(-1)[0]},${H-pad.b} L${pts[0][0]},${H-pad.b} Z`;
-      const grids = [60,80,100].map(v => `<g><line class="gridline" x1="${pad.l}" x2="${W-pad.r}" y1="${y(v)}" y2="${y(v)}"/><text class="axis-label" x="0" y="${y(v)+4}">${v}</text></g>`).join("");
-      const labels = dashboard.dates.map((d,i) => `<text class="axis-label" text-anchor="middle" x="${x(i)}" y="${H-8}">${d}</text>`).join("");
-      const points = pts.map((p,i) => `<g><circle class="point" cx="${p[0]}" cy="${p[1]}" r="4"/><title>${dashboard.dates[i]}：${dashboard.totals[i]} 人次</title></g>`).join("");
-      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-      svg.innerHTML = `<defs><linearGradient id="lineGradient"><stop stop-color="#60a5fa"/><stop offset="1" stop-color="#5eead4"/></linearGradient><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#5eead4" stop-opacity=".24"/><stop offset="1" stop-color="#5eead4" stop-opacity="0"/></linearGradient></defs>${grids}<path class="area" d="${area}"/><path class="line" d="${line}"/>${points}${labels}`;
-    }
-
-    function renderRanking() {
-      const latest = dashboard.groups.map(g => ({name:g.name,value:g.history.at(-1)})).sort((a,b) => b.value-a.value).slice(0,8);
-      const max = latest[0].value || 1;
-      document.getElementById("ranking").innerHTML = latest.map((g,i) => `<div class="rank-row"><div class="rank-name">${i+1}. ${g.name}</div><div class="bar-track"><div class="bar" style="width:${g.value/max*100}%"></div></div><div class="bar-value">${g.value}</div></div>`).join("");
-    }
-
-    let activeFilter = "all";
-    function renderTable() {
-      const query = document.getElementById("search").value.trim().toLowerCase();
-      const rows = dashboard.groups.filter(g => {
-        const filterMatch = activeFilter === "all" || (activeFilter === "warning" ? g.warning : g.tier === activeFilter);
-        return filterMatch && g.name.toLowerCase().includes(query);
-      }).sort((a,b) => b.history.at(-1)-a.history.at(-1));
-      const tierClass = {"高活":"tier-high","活跃":"tier-active","低活":"tier-low","普通":"tier-normal"};
-      document.getElementById("groupRows").innerHTML = rows.map(g => {
-        const week = g.history.slice(-4);
-        const avg = (week.reduce((a,b) => a+b, 0)/week.length).toFixed(1);
-        return `<tr><td>${g.name}</td><td class="num">${g.size ?? '<span class="muted">未记录</span>'}</td>${week.map(v => `<td class="num">${v}</td>`).join("")}<td class="num">${avg}</td><td><span class="pill ${tierClass[g.tier]}">${g.tier}</span></td><td>${g.warning ? '<span class="warn">低活预警</span>' : '<span class="muted">—</span>'}</td></tr>`;
-      }).join("");
-      document.getElementById("tableFoot").textContent = `当前显示 ${rows.length} / ${dashboard.groups.length} 个社群 · “未记录”表示规模表中暂无可用人数`;
-    }
-
-    document.querySelectorAll(".filter").forEach(button => button.addEventListener("click", () => {
-      document.querySelectorAll(".filter").forEach(item => item.classList.remove("active"));
-      button.classList.add("active"); activeFilter = button.dataset.filter; renderTable();
-    }));
-    document.getElementById("search").addEventListener("input", renderTable);
-    renderTrend(); renderRanking(); renderTable();
+    let dashboard=null,activeFilter="all";const escapeHTML=value=>String(value??"").replace(/[&<>'"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));const signed=value=>`${value>0?"+":value<0?"−":""}${Math.abs(value).toFixed(1)}`;
+    let dashboardSection="overview";function showDashboardSection(section,{updateHash=true,scroll=true}={}){dashboardSection=["overview","trends","groups"].includes(section)?section:"overview";document.querySelectorAll("[data-dashboard-section]").forEach(panel=>panel.hidden=panel.dataset.dashboardSection!==dashboardSection);document.querySelectorAll("[data-dashboard-link]").forEach(button=>{const active=button.dataset.dashboardLink===dashboardSection;button.classList.toggle("active",active);button.setAttribute("aria-current",active?"page":"false")});if(updateHash)history.replaceState(null,"",`#dashboard-${dashboardSection}`);if(scroll)window.scrollTo({top:0,behavior:"smooth"})}function showView(view,section="overview"){const isDashboard=view==="dashboard";document.getElementById("homeView").hidden=isDashboard;document.getElementById("dashboardView").hidden=!isDashboard;if(isDashboard)showDashboardSection(section,{updateHash:true,scroll:false});else history.replaceState(null,"","#home");window.scrollTo({top:0,behavior:"smooth"})}
+    document.querySelectorAll("[data-view-link]").forEach(control=>control.addEventListener("click",event=>{const view=control.dataset.viewLink;if(view){event.preventDefault();showView(view)}}));
+    document.querySelectorAll("[data-dashboard-link]").forEach(button=>button.addEventListener("click",()=>showDashboardSection(button.dataset.dashboardLink)));
+    function showDetailTable(view){const isFocus=view!=="history";document.getElementById("focusTablePanel").hidden=!isFocus;document.getElementById("historyTablePanel").hidden=isFocus;document.querySelectorAll("[data-detail-link]").forEach(button=>button.classList.toggle("active",button.dataset.detailLink===(isFocus?"focus":"history")))}document.querySelectorAll("[data-detail-link]").forEach(button=>button.addEventListener("click",()=>showDetailTable(button.dataset.detailLink)));
+    function renderHome(){}
+    function renderTierSummary(){const config={"高活":["#2c9d7a","近 5 日中至少 3 日达到 20+ 人"],"活跃":["#315bc6","近 5 日中至少 3 日达到 10+ 人"],"普通":["#d18b24",`其中 ${dashboard.warningCount} 个带低活预警`],"低活":["#f15e4b","近 5 个有效日每日活跃人数低于 5"]};document.getElementById("tierSummary").innerHTML=["高活","活跃","普通","低活"].map(tier=>`<article class="card tier-card" style="--tier-color:${config[tier][0]}"><div class="tier-label">${tier}社群</div><div class="tier-number"><strong>${dashboard.tierCounts[tier]}</strong><span>个群</span></div><small>${config[tier][1]}</small></article>`).join("")}
+    const chipList=(names,emptyText)=>names.length?names.map(name=>`<span class="group-chip">${escapeHTML(name)}</span>`).join(""):`<span class="muted">${escapeHTML(emptyText)}</span>`;
+    function renderFocus(){const high=dashboard.focus.high,targets=dashboard.focus.activeTargets,low=dashboard.focus.low,warnings=dashboard.focus.warning;document.getElementById("highCount").textContent=`正式高活 ${high.length} 个`;document.getElementById("highCopy").textContent=high.length?"这些社群在最近 5 个有效统计日达到高活标准，可复盘并复制有效做法。":`最近 5 个有效统计日暂无正式高活。以下 ${targets.length} 个活跃社群最适合在下一轮冲高。`;document.getElementById("highList").innerHTML=chipList(high.length?high:targets,"暂无可展示社群");document.getElementById("lowCount").textContent=`正式低活 ${low.length} 个`;document.getElementById("lowCopy").textContent=low.length?`以下 ${low.length} 个社群在最近 5 个有效统计日内每日均低于 5 人，建议优先安排唤醒动作。`:"最近 5 个有效统计日暂无正式低活社群。";document.getElementById("lowList").innerHTML=chipList(low,"暂无正式低活社群");document.getElementById("warningCopy").textContent=warnings.length?`低活预警 ${warnings.length} 个：${warnings.join("、")}。预警仍归普通档。`:"当前没有低活预警。"}
+    function renderTrend(){const points=dashboard.trendDaily||[],width=720,height=220,pad={x:28,y:24},max=Math.max(...points.map(point=>point.value),1),min=Math.min(...points.map(point=>point.value),0),span=Math.max(max-min,1),x=index=>pad.x+(width-pad.x*2)*(points.length===1?0:index/(points.length-1)),y=value=>height-pad.y-(height-pad.y*2)*(value-min)/span,coords=points.map((point,index)=>`${x(index).toFixed(1)},${y(point.value).toFixed(1)}`),area=`${pad.x},${height-pad.y} ${coords.join(" ")} ${x(points.length-1)},${height-pad.y}`;document.getElementById("lineChart").innerHTML=`<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true"><line class="line-grid" x1="${pad.x}" y1="${pad.y}" x2="${width-pad.x}" y2="${pad.y}"/><line class="line-grid" x1="${pad.x}" y1="${height/2}" x2="${width-pad.x}" y2="${height/2}"/><line class="line-grid" x1="${pad.x}" y1="${height-pad.y}" x2="${width-pad.x}" y2="${height-pad.y}"/><polygon class="line-fill" points="${area}"/><polyline class="line-path" points="${coords.join(" ")}"/>${points.map((point,index)=>`<circle class="line-dot" cx="${x(index)}" cy="${y(point.value)}" r="3.5"/><text class="line-value" x="${x(index)}" y="${Math.max(13,y(point.value)-9)}" text-anchor="middle">${point.value}</text>${(index===0||index===points.length-1||index%3===0)?`<text class="line-label" x="${x(index)}" y="${height-5}" text-anchor="middle">${escapeHTML(point.label)}</text>`:""}`).join("")}</svg>`;const change=dashboard.trendChangePercent??0,tag=document.getElementById("trendTag");tag.textContent=`较上半月 ${change>0?"+":change<0?"−":""}${Math.abs(change).toFixed(1)}%`;tag.style.setProperty("--tag-color",change>=0?"#16713a":"#b91c42");tag.style.setProperty("--tag-bg",change>=0?"#edf9f0":"#fff0f3");document.getElementById("chartNote").textContent=`数据截止 ${dashboard.latestDate}，折线展示最近 ${points.length} 个有效统计日。`;const periods=dashboard.periods;document.getElementById("changeSubtitle").textContent=`${periods.at(-1).label}日均 对比 ${periods.at(-2).label}日均`;const list=(items,type)=>items.map(item=>`<div class="change-row"><span>${escapeHTML(item.name)}</span><span class="${type==="up"?"delta-up":"delta-down"}">${signed(item.change)}</span></div>`).join("");document.getElementById("risingList").innerHTML=list(dashboard.changes.rising,"up");document.getElementById("fallingList").innerHTML=list(dashboard.changes.falling,"down")}
+    function renderFilters(){const options=[["all","全部",dashboard.groups.length],["高活","高活",dashboard.tierCounts["高活"]],["活跃","活跃",dashboard.tierCounts["活跃"]],["普通","普通",dashboard.tierCounts["普通"]],["低活","低活",dashboard.tierCounts["低活"]],["warning","低活预警",dashboard.warningCount]];document.getElementById("filters").innerHTML=options.map(([value,label,count])=>`<button class="filter${value===activeFilter?" active":""}" type="button" data-filter="${value}">${label} ${count}</button>`).join("");document.querySelectorAll(".filter").forEach(button=>button.addEventListener("click",()=>{activeFilter=button.dataset.filter;renderFilters();renderTable()}))}
+    const getRows=()=>{const query=document.getElementById("search").value.trim().toLowerCase(),priority=group=>group.tier==="低活"?0:group.warning?1:group.tier==="高活"?2:group.tier==="活跃"?3:4;return dashboard.groups.filter(group=>(activeFilter==="all"||(activeFilter==="warning"?group.warning:group.tier===activeFilter))&&group.name.toLowerCase().includes(query)).sort((a,b)=>priority(a)-priority(b)||(priority(a)<=1?a.latest-b.latest:b.latest-a.latest))};
+    function renderTable(){const periods=dashboard.periods.slice(-3),rows=getRows(),tierClass={"高活":"tier-high","活跃":"tier-active","低活":"tier-low","普通":"tier-normal"},risk=group=>group.tier==="低活"?(group.previousTier==="低活"?"持续低活":"近5日低活"):group.warning?"低活预警":"—",rowClass=group=>group.tier==="低活"?"row-low":group.warning?"row-warning":["活跃","高活"].includes(group.tier)?"row-active":"",empty=(span)=>`<tr class="empty-row"><td colspan="${span}">当前没有符合条件的社群</td></tr>`;document.getElementById("focusTableHead").innerHTML=["社群","当前活跃度","近 5 日档位","需关注","半月变化","群规模"].map(label=>`<th>${label}</th>`).join("");document.getElementById("focusGroupRows").innerHTML=rows.length?rows.map(group=>`<tr class="${rowClass(group)}"><td data-label="社群">${escapeHTML(group.name)}</td><td data-label="当前活跃度"><span class="activity-value">${group.latest}<small>人</small></span></td><td data-label="近 5 日档位"><span class="pill ${tierClass[group.tier]}">${group.tier}</span></td><td data-label="需关注">${risk(group)==="—"?'<span class="muted">—</span>':`<span class="warn">${risk(group)}</span>`}</td><td class="change-cell ${group.change>0?"delta-up":group.change<0?"delta-down":"muted"}" data-label="半月变化">${signed(group.change)}</td><td class="num" data-label="群规模">${group.size??'<span class="muted">未记录</span>'}</td></tr>`).join(""):empty(6);document.getElementById("historyTableHead").innerHTML=["社群",...periods.map(period=>`${period.label}日均`),"半月变化"].map(label=>`<th>${escapeHTML(label)}</th>`).join("");document.getElementById("historyGroupRows").innerHTML=rows.length?rows.map(group=>`<tr class="${rowClass(group)}"><td data-label="社群">${escapeHTML(group.name)}</td>${group.periodAverages.slice(-3).map((value,index)=>`<td class="num" data-label="${escapeHTML(periods[index].label)}日均">${value.toFixed(1)}</td>`).join("")}<td class="change-cell ${group.change>0?"delta-up":group.change<0?"delta-down":"muted"}" data-label="半月变化">${signed(group.change)}</td></tr>`).join(""):empty(5);["focusTableFoot","historyTableFoot"].forEach(id=>document.getElementById(id).textContent=`当前显示 ${rows.length} / ${dashboard.groups.length} 个社群。`)}
+    function renderDashboard(){document.getElementById("dashboardMeta").textContent=`数据范围：${dashboard.rangeLabel} · ${dashboard.effectiveDays} 个有效统计日 · 最近 5 日 ${dashboard.latestWindow.label}`;renderTierSummary();renderFocus();renderTrend();renderFilters();renderTable();document.getElementById("dashboardLoading").hidden=true;document.getElementById("dashboardContent").hidden=false}
+    async function loadDashboard(){try{const response=await fetch("dashboard-data.json",{cache:"no-store"});if(!response.ok)throw new Error("data request failed");dashboard=await response.json();renderHome();renderDashboard()}catch(error){const message="暂时无法读取看板数据，请刷新页面后重试。";document.getElementById("homeError").textContent=message;document.getElementById("homeError").hidden=false;document.getElementById("dashboardLoading").hidden=true;document.getElementById("dashboardError").textContent=message;document.getElementById("dashboardError").hidden=false}}
+    document.getElementById("search").addEventListener("input",()=>dashboard&&renderTable());const initialHash=location.hash.replace("#","");if(initialHash.startsWith("dashboard")){showView("dashboard",initialHash.split("-")[1]||"overview")}else showView("home");loadDashboard();
   </script>
 </body>
 </html>
