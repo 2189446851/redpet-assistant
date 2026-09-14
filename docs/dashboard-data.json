@@ -1,0 +1,628 @@
+{
+  "generatedAt": "2026-09-14T17:55:59+08:00",
+  "source": "企业微信在线表格",
+  "rangeLabel": "8月10日—9月10日",
+  "effectiveDays": 24,
+  "latestDate": "9月10日",
+  "latestWindow": {
+    "label": "9/4—9/10",
+    "effectiveDays": 5,
+    "dates": [
+      "9.4",
+      "9.7",
+      "9.8",
+      "9.9",
+      "9.10"
+    ]
+  },
+  "tierCounts": {
+    "高活": 0,
+    "活跃": 4,
+    "普通": 9,
+    "低活": 6
+  },
+  "warningCount": 3,
+  "periods": [
+    {
+      "key": "2026-08-H1",
+      "label": "8月上半月",
+      "dates": [
+        "8.10",
+        "8.11",
+        "8.12",
+        "8.13",
+        "8.14"
+      ],
+      "effectiveDays": 5,
+      "dailyAverage": 99.2
+    },
+    {
+      "key": "2026-08-H2",
+      "label": "8月下半月",
+      "dates": [
+        "8.17",
+        "8.18",
+        "8.19",
+        "8.20",
+        "8.21",
+        "8.24",
+        "8.25",
+        "8.26",
+        "8.27",
+        "8.28",
+        "8.31"
+      ],
+      "effectiveDays": 11,
+      "dailyAverage": 84.5
+    },
+    {
+      "key": "2026-09-H1",
+      "label": "9月上半月",
+      "dates": [
+        "9.1",
+        "9.2",
+        "9.3",
+        "9.4",
+        "9.7",
+        "9.8",
+        "9.9",
+        "9.10"
+      ],
+      "effectiveDays": 8,
+      "dailyAverage": 83.8
+    }
+  ],
+  "trendChangePercent": -0.8,
+  "trendDaily": [
+    {
+      "label": "8/21",
+      "value": 66.0
+    },
+    {
+      "label": "8/24",
+      "value": 108.0
+    },
+    {
+      "label": "8/25",
+      "value": 112.0
+    },
+    {
+      "label": "8/26",
+      "value": 79.0
+    },
+    {
+      "label": "8/27",
+      "value": 57.0
+    },
+    {
+      "label": "8/28",
+      "value": 67.0
+    },
+    {
+      "label": "8/31",
+      "value": 85.0
+    },
+    {
+      "label": "9/1",
+      "value": 93.0
+    },
+    {
+      "label": "9/2",
+      "value": 72.0
+    },
+    {
+      "label": "9/3",
+      "value": 59.0
+    },
+    {
+      "label": "9/4",
+      "value": 88.0
+    },
+    {
+      "label": "9/7",
+      "value": 81.0
+    },
+    {
+      "label": "9/8",
+      "value": 98.0
+    },
+    {
+      "label": "9/9",
+      "value": 81.0
+    },
+    {
+      "label": "9/10",
+      "value": 98.0
+    }
+  ],
+  "groups": [
+    {
+      "name": "猫猫托儿所1群",
+      "size": 499,
+      "periodAverages": [
+        5.0,
+        3.5,
+        3.9
+      ],
+      "change": 0.4,
+      "tier": "普通",
+      "warning": true,
+      "previousTier": "普通",
+      "lowStreak": 3,
+      "latest": 7,
+      "latestWindow": [
+        1.0,
+        3.0,
+        3.0,
+        7.0,
+        7.0
+      ]
+    },
+    {
+      "name": "猫猫托儿所2群",
+      "size": 434,
+      "periodAverages": [
+        4.0,
+        3.8,
+        3.6
+      ],
+      "change": -0.2,
+      "tier": "普通",
+      "warning": false,
+      "previousTier": "普通",
+      "lowStreak": 2,
+      "latest": 5,
+      "latestWindow": [
+        2.0,
+        3.0,
+        5.0,
+        4.0,
+        5.0
+      ]
+    },
+    {
+      "name": "猫猫托儿所3群",
+      "size": null,
+      "periodAverages": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "change": 0.0,
+      "tier": "低活",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 5,
+      "latest": 0,
+      "latestWindow": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "猫猫总裁办1群",
+      "size": 500,
+      "periodAverages": [
+        7.0,
+        5.5,
+        4.4
+      ],
+      "change": -1.1,
+      "tier": "普通",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 1,
+      "latest": 6,
+      "latestWindow": [
+        0,
+        10.0,
+        5.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "name": "猫猫总裁办2群",
+      "size": 500,
+      "periodAverages": [
+        3.0,
+        1.8,
+        3.1
+      ],
+      "change": 1.3,
+      "tier": "普通",
+      "warning": true,
+      "previousTier": "普通",
+      "lowStreak": 4,
+      "latest": 9,
+      "latestWindow": [
+        2.0,
+        2.0,
+        2.0,
+        2.0,
+        9.0
+      ]
+    },
+    {
+      "name": "猫猫总裁办3群",
+      "size": 472,
+      "periodAverages": [
+        2.4,
+        1.0,
+        2.2
+      ],
+      "change": 1.2,
+      "tier": "低活",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 5,
+      "latest": 2,
+      "latestWindow": [
+        1.0,
+        3.0,
+        4.0,
+        3.0,
+        2.0
+      ]
+    },
+    {
+      "name": "猫猫总裁办4群",
+      "size": 487,
+      "periodAverages": [
+        6.8,
+        6.5,
+        5.1
+      ],
+      "change": -1.4,
+      "tier": "普通",
+      "warning": false,
+      "previousTier": "普通",
+      "lowStreak": 1,
+      "latest": 4,
+      "latestWindow": [
+        6.0,
+        8.0,
+        7.0,
+        5.0,
+        4.0
+      ]
+    },
+    {
+      "name": "猫猫总裁办5群",
+      "size": 310,
+      "periodAverages": [
+        8.4,
+        6.0,
+        7.6
+      ],
+      "change": 1.6,
+      "tier": "活跃",
+      "warning": false,
+      "previousTier": "普通",
+      "lowStreak": 2,
+      "latest": 4,
+      "latestWindow": [
+        12.0,
+        10.0,
+        12.0,
+        3.0,
+        4.0
+      ]
+    },
+    {
+      "name": "猫猫总裁办6群",
+      "size": null,
+      "periodAverages": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "change": 0.0,
+      "tier": "低活",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 5,
+      "latest": 0,
+      "latestWindow": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "猫猫养老院1群",
+      "size": 483,
+      "periodAverages": [
+        2.0,
+        2.1,
+        0.9
+      ],
+      "change": -1.2,
+      "tier": "低活",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 5,
+      "latest": 1,
+      "latestWindow": [
+        0,
+        0,
+        3.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "狗狗托儿所",
+      "size": 431,
+      "periodAverages": [
+        4.8,
+        5.0,
+        3.2
+      ],
+      "change": -1.8,
+      "tier": "普通",
+      "warning": false,
+      "previousTier": "普通",
+      "lowStreak": 2,
+      "latest": 2,
+      "latestWindow": [
+        5.0,
+        2.0,
+        7.0,
+        4.0,
+        2.0
+      ]
+    },
+    {
+      "name": "狗狗托儿所2群",
+      "size": null,
+      "periodAverages": [
+        0.0,
+        0.0,
+        0.2
+      ],
+      "change": 0.2,
+      "tier": "低活",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 5,
+      "latest": 2,
+      "latestWindow": [
+        0,
+        0,
+        0,
+        0,
+        2.0
+      ]
+    },
+    {
+      "name": "狗狗总裁办1群",
+      "size": 499,
+      "periodAverages": [
+        5.2,
+        2.8,
+        2.5
+      ],
+      "change": -0.3,
+      "tier": "普通",
+      "warning": true,
+      "previousTier": "低活",
+      "lowStreak": 4,
+      "latest": 3,
+      "latestWindow": [
+        5.0,
+        1.0,
+        1.0,
+        2.0,
+        3.0
+      ]
+    },
+    {
+      "name": "狗狗总裁办2群",
+      "size": 500,
+      "periodAverages": [
+        13.2,
+        12.1,
+        11.2
+      ],
+      "change": -0.9,
+      "tier": "活跃",
+      "warning": false,
+      "previousTier": "活跃",
+      "lowStreak": 0,
+      "latest": 10,
+      "latestWindow": [
+        15.0,
+        10.0,
+        13.0,
+        10.0,
+        10.0
+      ]
+    },
+    {
+      "name": "狗狗养老院",
+      "size": 294,
+      "periodAverages": [
+        3.6,
+        5.0,
+        3.5
+      ],
+      "change": -1.5,
+      "tier": "普通",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 2,
+      "latest": 3,
+      "latestWindow": [
+        6.0,
+        2.0,
+        5.0,
+        3.0,
+        3.0
+      ]
+    },
+    {
+      "name": "科学养宠社1群",
+      "size": 497,
+      "periodAverages": [
+        9.6,
+        6.5,
+        6.0
+      ],
+      "change": -0.5,
+      "tier": "普通",
+      "warning": false,
+      "previousTier": "普通",
+      "lowStreak": 1,
+      "latest": 8,
+      "latestWindow": [
+        3.0,
+        8.0,
+        6.0,
+        6.0,
+        8.0
+      ]
+    },
+    {
+      "name": "户外遛宠社",
+      "size": 424,
+      "periodAverages": [
+        13.4,
+        11.6,
+        15.2
+      ],
+      "change": 3.6,
+      "tier": "活跃",
+      "warning": false,
+      "previousTier": "活跃",
+      "lowStreak": 0,
+      "latest": 20,
+      "latestWindow": [
+        20.0,
+        11.0,
+        15.0,
+        15.0,
+        20.0
+      ]
+    },
+    {
+      "name": "户外遛宠社2群",
+      "size": null,
+      "periodAverages": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "change": 0.0,
+      "tier": "低活",
+      "warning": false,
+      "previousTier": "低活",
+      "lowStreak": 5,
+      "latest": 0,
+      "latestWindow": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "萌宠美颜社",
+      "size": 322,
+      "periodAverages": [
+        10.8,
+        11.2,
+        10.9
+      ],
+      "change": -0.3,
+      "tier": "活跃",
+      "warning": false,
+      "previousTier": "活跃",
+      "lowStreak": 0,
+      "latest": 12,
+      "latestWindow": [
+        10.0,
+        8.0,
+        10.0,
+        10.0,
+        12.0
+      ]
+    }
+  ],
+  "focus": {
+    "high": [],
+    "activeTargets": [
+      "户外遛宠社",
+      "狗狗总裁办2群",
+      "萌宠美颜社",
+      "猫猫总裁办5群"
+    ],
+    "low": [
+      "猫猫托儿所3群",
+      "猫猫总裁办6群",
+      "户外遛宠社2群",
+      "狗狗托儿所2群",
+      "猫猫养老院1群",
+      "猫猫总裁办3群"
+    ],
+    "warning": [
+      "狗狗总裁办1群",
+      "猫猫总裁办2群",
+      "猫猫托儿所1群"
+    ]
+  },
+  "changes": {
+    "rising": [
+      {
+        "name": "户外遛宠社",
+        "change": 3.6
+      },
+      {
+        "name": "猫猫总裁办5群",
+        "change": 1.6
+      },
+      {
+        "name": "猫猫总裁办2群",
+        "change": 1.3
+      },
+      {
+        "name": "猫猫总裁办3群",
+        "change": 1.2
+      }
+    ],
+    "falling": [
+      {
+        "name": "狗狗托儿所",
+        "change": -1.8
+      },
+      {
+        "name": "狗狗养老院",
+        "change": -1.5
+      },
+      {
+        "name": "猫猫总裁办4群",
+        "change": -1.4
+      },
+      {
+        "name": "猫猫养老院1群",
+        "change": -1.2
+      }
+    ]
+  },
+  "dataQuality": {
+    "excludedDates": [],
+    "groupCount": 19,
+    "namesMatch": true,
+    "extraSizeOnlyGroups": [
+      "狗狗总裁办3群",
+      "猫猫养老院2群",
+      "科学养宠社2群"
+    ]
+  }
+}
