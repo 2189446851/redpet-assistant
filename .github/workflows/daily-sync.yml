@@ -2,8 +2,10 @@ name: RedPet Dashboard Daily Sync
 
 on:
   schedule:
-    # UTC 03:00 = 北京时间每天 11:00
+    # UTC 03:00 = 北京时间每天 11:00（主）
     - cron: '0 3 * * *'
+    # UTC 05:00 = 北京时间每天 13:00（备用：GitHub 偶发延迟/跳过时补跑；数据无变化会自动跳过提交）
+    - cron: '0 5 * * *'
   workflow_dispatch:   # 允许在 GitHub 网页手动点一下就跑
 
 jobs:
