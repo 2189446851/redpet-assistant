@@ -135,7 +135,10 @@ def xlsx_to_input(path, sheet_title, out_name):
 # ---------- 从企业微信在线表格读取 ----------
 def wecom_run(args, out_path=None):
     cmd = WECOM_CLI + args
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    # ⚠️ 必须显式指定 utf-8：Windows 计划任务环境下默认编码是 GBK，
+    #    不指定会把 CLI 的 UTF-8 输出读成乱码/空串，导致下游 json.loads(None) 崩溃。
+    res = subprocess.run(cmd, capture_output=True, text=True,
+                         encoding="utf-8", errors="replace")
     if res.returncode != 0:
         raise SystemExit(f"wecom 命令失败：{' '.join(cmd)}\n{res.stderr.strip()}")
     if out_path:
