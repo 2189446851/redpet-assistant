@@ -81,7 +81,29 @@
     function renderTable(){const periods=dashboard.periods.slice(-3),rows=getRows(),tierClass={"高活":"tier-high","活跃":"tier-active","低活":"tier-low","普通":"tier-normal"},risk=group=>group.tier==="低活"?(group.previousTier==="低活"?"持续低活":"近5日低活"):group.warning?"低活预警":"—",rowClass=group=>group.tier==="低活"?"row-low":group.warning?"row-warning":["活跃","高活"].includes(group.tier)?"row-active":"",empty=(span)=>`<tr class="empty-row"><td colspan="${span}">当前没有符合条件的社群</td></tr>`;document.getElementById("focusTableHead").innerHTML=["社群","当前活跃度","近 5 日档位","需关注","半月变化","群规模"].map(label=>`<th>${label}</th>`).join("");document.getElementById("focusGroupRows").innerHTML=rows.length?rows.map(group=>`<tr class="${rowClass(group)}"><td data-label="社群">${escapeHTML(group.name)}</td><td data-label="当前活跃度"><span class="activity-value">${group.latest}<small>人</small></span></td><td data-label="近 5 日档位"><span class="pill ${tierClass[group.tier]}">${group.tier}</span></td><td data-label="需关注">${risk(group)==="—"?'<span class="muted">—</span>':`<span class="warn">${risk(group)}</span>`}</td><td class="change-cell ${group.change>0?"delta-up":group.change<0?"delta-down":"muted"}" data-label="半月变化">${signed(group.change)}</td><td class="num" data-label="群规模">${group.size??'<span class="muted">未记录</span>'}</td></tr>`).join(""):empty(6);document.getElementById("historyTableHead").innerHTML=["社群",...periods.map(period=>`${period.label}日均`),"半月变化"].map(label=>`<th>${escapeHTML(label)}</th>`).join("");document.getElementById("historyGroupRows").innerHTML=rows.length?rows.map(group=>`<tr class="${rowClass(group)}"><td data-label="社群">${escapeHTML(group.name)}</td>${group.periodAverages.slice(-3).map((value,index)=>`<td class="num" data-label="${escapeHTML(periods[index].label)}日均">${value.toFixed(1)}</td>`).join("")}<td class="change-cell ${group.change>0?"delta-up":group.change<0?"delta-down":"muted"}" data-label="半月变化">${signed(group.change)}</td></tr>`).join(""):empty(5);["focusTableFoot","historyTableFoot"].forEach(id=>document.getElementById(id).textContent=`当前显示 ${rows.length} / ${dashboard.groups.length} 个社群。`)}
     function renderDashboard(){document.getElementById("dashboardMeta").textContent=`数据范围：${dashboard.rangeLabel} · ${dashboard.effectiveDays} 个有效统计日 · 最近 5 日 ${dashboard.latestWindow.label}`;renderTierSummary();renderFocus();renderTrend();renderFilters();renderTable();document.getElementById("dashboardLoading").hidden=true;document.getElementById("dashboardContent").hidden=false}
     async function loadDashboard(){try{const response=await fetch("dashboard-data.json?t="+Date.now(),{cache:"no-store"});if(!response.ok)throw new Error("data request failed");dashboard=await response.json();renderHome();renderDashboard()}catch(error){const message="暂时无法读取看板数据，请刷新页面后重试。";document.getElementById("homeError").textContent=message;document.getElementById("homeError").hidden=false;document.getElementById("dashboardLoading").hidden=true;document.getElementById("dashboardError").textContent=message;document.getElementById("dashboardError").hidden=false}}
-    document.getElementById("search").addEventListener("input",()=>dashboard&&renderTable());const initialHash=location.hash.replace("#","");if(initialHash.startsWith("dashboard")){showView("dashboard",initialHash.split("-")[1]||"overview")}else if(initialHash==="assistant"){showView("assistant")}else showView("home");loadDashboard();document.addEventListener("visibilitychange",function(){if(!document.hidden&&dashboard)loadDashboard()});window.addEventListener("pageshow",function(e){if(e.persisted&&dashboard)loadDashboard()});
+    document.getElementById("search").addEventListener("input",()=>dashboard&&renderTable());const initialHash=location.hash.replace("#","");if(initialHash.startsWith("dashboard")){showView("dashboard",initialHash.split("-")[1]||"overview")}else if(initialHash==="assistant"){showView("assistant")}else showView("home");loadDashboard();
+/* 自动刷新：保证从主屏图标打开、或页面一直挂着时，看到的都是最新数据 */
+var _stamp=null,_busy=false;
+function _pullData(force){
+  if(_busy)return;_busy=true;
+  fetch("dashboard-data.json?t="+Date.now(),{cache:"no-store"})
+  .then(function(r){return r.ok?r.json():null})
+  .then(function(d){
+    if(!d)return;
+    var s=d.generatedAt||"";
+    if(!force&&s&&s===_stamp)return;   /* 没变化就不重绘，避免干扰正在看的人 */
+    _stamp=s;dashboard=d;
+    try{renderHome();renderDashboard()}catch(e){}
+  })
+  .catch(function(){/* 拉取失败时保留现有数据，不报错 */})
+  .then(function(){_busy=false});
+}
+setTimeout(function(){if(dashboard&&dashboard.generatedAt)_stamp=dashboard.generatedAt},2000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)_pullData(true)});
+window.addEventListener("pageshow",function(){_pullData(true)});
+window.addEventListener("focus",function(){_pullData(true)});
+window.addEventListener("online",function(){_pullData(true)});
+setInterval(function(){if(!document.hidden)_pullData(false)},60000);
   </script>
 </body>
 </html>
