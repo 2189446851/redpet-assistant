@@ -1,27 +1,27 @@
 {
-  "generatedAt": "2026-09-14T22:34:45+08:00",
+  "generatedAt": "2026-09-15T13:13:42+08:00",
   "source": "企业微信在线表格",
-  "rangeLabel": "8月10日—9月13日",
-  "effectiveDays": 27,
-  "latestDate": "9月13日",
+  "rangeLabel": "8月10日—9月14日",
+  "effectiveDays": 28,
+  "latestDate": "9月14日",
   "latestWindow": {
-    "label": "9/9—9/13",
+    "label": "9/10—9/14",
     "effectiveDays": 5,
     "dates": [
-      "9.9",
       "9.10",
       "9.11",
       "9.12",
-      "9.13"
+      "9.13",
+      "9.14"
     ]
   },
   "tierCounts": {
     "高活": 0,
-    "活跃": 3,
-    "普通": 7,
+    "活跃": 2,
+    "普通": 8,
     "低活": 9
   },
-  "warningCount": 4,
+  "warningCount": 3,
   "periods": [
     {
       "key": "2026-08-H1",
@@ -69,18 +69,15 @@
         "9.10",
         "9.11",
         "9.12",
-        "9.13"
+        "9.13",
+        "9.14"
       ],
-      "effectiveDays": 11,
-      "dailyAverage": 81.5
+      "effectiveDays": 12,
+      "dailyAverage": 81.7
     }
   ],
-  "trendChangePercent": -3.6,
+  "trendChangePercent": -3.3,
   "trendDaily": [
-    {
-      "label": "8/26",
-      "value": 79.0
-    },
     {
       "label": "8/27",
       "value": 57.0
@@ -136,6 +133,10 @@
     {
       "label": "9/13",
       "value": 60.0
+    },
+    {
+      "label": "9/14",
+      "value": 83.0
     }
   ],
   "groups": [
@@ -152,13 +153,13 @@
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 1,
-      "latest": 6,
+      "latest": 4,
       "latestWindow": [
-        7.0,
         7.0,
         5.0,
         2.0,
-        6.0
+        6.0,
+        4.0
       ]
     },
     {
@@ -167,20 +168,20 @@
       "periodAverages": [
         4.0,
         3.8,
-        4.6
+        4.9
       ],
-      "change": 0.8,
+      "change": 1.1,
       "tier": "普通",
       "warning": false,
       "previousTier": "普通",
-      "lowStreak": 1,
-      "latest": 5,
+      "lowStreak": 0,
+      "latest": 8,
       "latestWindow": [
-        4.0,
         5.0,
         10.0,
         7.0,
-        5.0
+        5.0,
+        8.0
       ]
     },
     {
@@ -189,20 +190,20 @@
       "periodAverages": [
         0.0,
         0.0,
-        0.0
+        0.2
       ],
-      "change": 0.0,
+      "change": 0.2,
       "tier": "低活",
       "warning": false,
       "previousTier": "低活",
       "lowStreak": 5,
-      "latest": 0,
+      "latest": 2,
       "latestWindow": [
         0,
         0,
         0,
         0,
-        0
+        2.0
       ]
     },
     {
@@ -211,20 +212,20 @@
       "periodAverages": [
         7.0,
         5.5,
-        4.0
+        4.2
       ],
-      "change": -1.5,
+      "change": -1.3,
       "tier": "普通",
       "warning": true,
       "previousTier": "普通",
       "lowStreak": 3,
-      "latest": 4,
+      "latest": 6,
       "latestWindow": [
-        6.0,
         6.0,
         2.0,
         3.0,
-        4.0
+        4.0,
+        6.0
       ]
     },
     {
@@ -233,20 +234,20 @@
       "periodAverages": [
         3.0,
         1.8,
-        2.6
+        2.5
       ],
-      "change": 0.8,
+      "change": 0.7,
       "tier": "普通",
       "warning": true,
       "previousTier": "低活",
-      "lowStreak": 3,
-      "latest": 2,
+      "lowStreak": 4,
+      "latest": 1,
       "latestWindow": [
-        2.0,
         9.0,
         1.0,
         1.0,
-        2.0
+        2.0,
+        1.0
       ]
     },
     {
@@ -255,20 +256,20 @@
       "periodAverages": [
         2.4,
         1.0,
-        1.9
+        1.8
       ],
-      "change": 0.9,
+      "change": 0.8,
       "tier": "低活",
       "warning": false,
       "previousTier": "低活",
       "lowStreak": 5,
-      "latest": 0,
+      "latest": 1,
       "latestWindow": [
-        3.0,
         2.0,
         0,
         3.0,
-        0
+        0,
+        1.0
       ]
     },
     {
@@ -277,20 +278,20 @@
       "periodAverages": [
         6.8,
         6.5,
-        4.7
+        5.2
       ],
-      "change": -1.8,
+      "change": -1.3,
       "tier": "普通",
       "warning": true,
       "previousTier": "普通",
       "lowStreak": 4,
-      "latest": 4,
+      "latest": 10,
       "latestWindow": [
-        5.0,
         4.0,
         3.0,
         4.0,
-        4.0
+        4.0,
+        10.0
       ]
     },
     {
@@ -303,16 +304,16 @@
       ],
       "change": 1.4,
       "tier": "普通",
-      "warning": true,
+      "warning": false,
       "previousTier": "活跃",
-      "lowStreak": 3,
-      "latest": 6,
+      "lowStreak": 2,
+      "latest": 8,
       "latestWindow": [
-        3.0,
         4.0,
         3.0,
         11.0,
-        6.0
+        6.0,
+        8.0
       ]
     },
     {
@@ -350,13 +351,13 @@
       "warning": false,
       "previousTier": "低活",
       "lowStreak": 5,
-      "latest": 0,
+      "latest": 1,
       "latestWindow": [
-        1.0,
         1.0,
         4.0,
         0,
-        0
+        0,
+        1.0
       ]
     },
     {
@@ -365,20 +366,20 @@
       "periodAverages": [
         4.8,
         5.0,
-        3.1
+        3.2
       ],
-      "change": -1.9,
+      "change": -1.8,
       "tier": "低活",
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 5,
-      "latest": 0,
+      "latest": 4,
       "latestWindow": [
-        4.0,
         2.0,
         4.0,
         4.0,
-        0
+        0,
+        4.0
       ]
     },
     {
@@ -396,8 +397,8 @@
       "lowStreak": 5,
       "latest": 0,
       "latestWindow": [
-        0,
         2.0,
+        0,
         0,
         0,
         0
@@ -409,20 +410,20 @@
       "periodAverages": [
         5.2,
         2.8,
-        2.3
+        2.1
       ],
-      "change": -0.5,
+      "change": -0.7,
       "tier": "低活",
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 5,
-      "latest": 1,
+      "latest": 0,
       "latestWindow": [
-        2.0,
         3.0,
         2.0,
         2.0,
-        1.0
+        1.0,
+        0
       ]
     },
     {
@@ -438,13 +439,13 @@
       "warning": false,
       "previousTier": "活跃",
       "lowStreak": 0,
-      "latest": 10,
+      "latest": 12,
       "latestWindow": [
-        10.0,
         10.0,
         9.0,
         15.0,
-        10.0
+        10.0,
+        12.0
       ]
     },
     {
@@ -453,9 +454,9 @@
       "periodAverages": [
         3.6,
         5.0,
-        3.4
+        3.2
       ],
-      "change": -1.6,
+      "change": -1.8,
       "tier": "低活",
       "warning": false,
       "previousTier": "普通",
@@ -463,9 +464,9 @@
       "latest": 2,
       "latestWindow": [
         3.0,
-        3.0,
         4.0,
         3.0,
+        2.0,
         2.0
       ]
     },
@@ -482,13 +483,13 @@
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 1,
-      "latest": 4,
+      "latest": 5,
       "latestWindow": [
-        6.0,
         8.0,
         3.0,
         6.0,
-        4.0
+        4.0,
+        5.0
       ]
     },
     {
@@ -497,20 +498,20 @@
       "periodAverages": [
         13.4,
         11.6,
-        15.5
+        15.0
       ],
-      "change": 3.9,
+      "change": 3.4,
       "tier": "活跃",
       "warning": false,
       "previousTier": "活跃",
       "lowStreak": 0,
-      "latest": 13,
+      "latest": 9,
       "latestWindow": [
-        15.0,
         20.0,
         16.0,
         20.0,
-        13.0
+        13.0,
+        9.0
       ]
     },
     {
@@ -519,20 +520,20 @@
       "periodAverages": [
         0.0,
         0.0,
-        0.0
+        0.1
       ],
-      "change": 0.0,
+      "change": 0.1,
       "tier": "低活",
       "warning": false,
       "previousTier": "低活",
       "lowStreak": 5,
-      "latest": 0,
+      "latest": 1,
       "latestWindow": [
         0,
         0,
         0,
         0,
-        0
+        1.0
       ]
     },
     {
@@ -541,20 +542,20 @@
       "periodAverages": [
         10.8,
         11.2,
-        10.0
+        9.9
       ],
-      "change": -1.2,
-      "tier": "活跃",
+      "change": -1.3,
+      "tier": "普通",
       "warning": false,
       "previousTier": "活跃",
       "lowStreak": 1,
-      "latest": 3,
+      "latest": 9,
       "latestWindow": [
-        10.0,
         12.0,
         7.0,
         13.0,
-        3.0
+        3.0,
+        9.0
       ]
     }
   ],
@@ -562,13 +563,12 @@
     "high": [],
     "activeTargets": [
       "户外遛宠社",
-      "狗狗总裁办2群",
-      "萌宠美颜社"
+      "狗狗总裁办2群"
     ],
     "low": [
-      "猫猫托儿所3群",
       "猫猫总裁办6群",
       "户外遛宠社2群",
+      "猫猫托儿所3群",
       "狗狗托儿所2群",
       "猫猫养老院1群",
       "猫猫总裁办3群",
@@ -577,47 +577,46 @@
       "狗狗养老院"
     ],
     "warning": [
-      "猫猫总裁办4群",
       "猫猫总裁办2群",
-      "猫猫总裁办1群",
-      "猫猫总裁办5群"
+      "猫猫总裁办4群",
+      "猫猫总裁办1群"
     ]
   },
   "changes": {
     "rising": [
       {
         "name": "户外遛宠社",
-        "change": 3.9
+        "change": 3.4
       },
       {
         "name": "猫猫总裁办5群",
         "change": 1.4
       },
       {
-        "name": "猫猫总裁办3群",
-        "change": 0.9
+        "name": "猫猫托儿所2群",
+        "change": 1.1
       },
       {
-        "name": "猫猫托儿所2群",
+        "name": "猫猫总裁办3群",
         "change": 0.8
       }
     ],
     "falling": [
       {
         "name": "狗狗托儿所",
-        "change": -1.9
-      },
-      {
-        "name": "猫猫总裁办4群",
         "change": -1.8
       },
       {
         "name": "狗狗养老院",
-        "change": -1.6
+        "change": -1.8
       },
       {
         "name": "猫猫总裁办1群",
-        "change": -1.5
+        "change": -1.3
+      },
+      {
+        "name": "猫猫总裁办4群",
+        "change": -1.3
       }
     ]
   },
