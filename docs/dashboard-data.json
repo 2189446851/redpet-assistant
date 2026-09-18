@@ -1,24 +1,24 @@
 {
-  "generatedAt": "2026-09-17T20:38:43+08:00",
+  "generatedAt": "2026-09-18T15:37:34+08:00",
   "source": "企业微信在线表格",
-  "rangeLabel": "8月10日—9月16日",
-  "effectiveDays": 30,
-  "latestDate": "9月16日",
+  "rangeLabel": "8月10日—9月17日",
+  "effectiveDays": 31,
+  "latestDate": "9月17日",
   "latestWindow": {
-    "label": "9/12—9/16",
+    "label": "9/13—9/17",
     "effectiveDays": 5,
     "dates": [
-      "9.12",
       "9.13",
       "9.14",
       "9.15",
-      "9.16"
+      "9.16",
+      "9.17"
     ]
   },
   "tierCounts": {
     "高活": 0,
-    "活跃": 3,
-    "普通": 6,
+    "活跃": 2,
+    "普通": 7,
     "低活": 10
   },
   "warningCount": 1,
@@ -80,18 +80,15 @@
       "key": "2026-09-H2",
       "label": "9月下半月",
       "dates": [
-        "9.16"
+        "9.16",
+        "9.17"
       ],
-      "effectiveDays": 1,
-      "dailyAverage": 83.0
+      "effectiveDays": 2,
+      "dailyAverage": 71.5
     }
   ],
-  "trendChangePercent": 0.7,
+  "trendChangePercent": -13.2,
   "trendDaily": [
-    {
-      "label": "8/31",
-      "value": 85.0
-    },
     {
       "label": "9/1",
       "value": 93.0
@@ -147,6 +144,10 @@
     {
       "label": "9/16",
       "value": 83.0
+    },
+    {
+      "label": "9/17",
+      "value": 60.0
     }
   ],
   "groups": [
@@ -163,11 +164,11 @@
       "tier": "普通",
       "warning": true,
       "previousTier": "普通",
-      "lowStreak": 3,
+      "lowStreak": 4,
       "latest": 4,
       "latestWindow": [
-        2.0,
         6.0,
+        4.0,
         4.0,
         4.0,
         4.0
@@ -180,20 +181,20 @@
         4.0,
         3.8,
         4.9,
-        6.0
+        4.5
       ],
-      "change": 1.1,
+      "change": -0.4,
       "tier": "普通",
       "warning": false,
       "previousTier": "普通",
-      "lowStreak": 0,
-      "latest": 6,
+      "lowStreak": 1,
+      "latest": 3,
       "latestWindow": [
-        7.0,
         5.0,
         8.0,
         5.0,
-        6.0
+        6.0,
+        3.0
       ]
     },
     {
@@ -226,20 +227,20 @@
         7.0,
         5.5,
         4.2,
-        3.0
+        4.0
       ],
-      "change": -1.2,
+      "change": -0.2,
       "tier": "普通",
       "warning": false,
       "previousTier": "普通",
-      "lowStreak": 2,
-      "latest": 3,
+      "lowStreak": 1,
+      "latest": 5,
       "latestWindow": [
-        3.0,
         4.0,
         6.0,
         5.0,
-        3.0
+        3.0,
+        5.0
       ]
     },
     {
@@ -249,20 +250,20 @@
         3.0,
         1.8,
         2.6,
-        1.0
+        1.5
       ],
-      "change": -1.6,
+      "change": -1.1,
       "tier": "低活",
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 5,
-      "latest": 1,
+      "latest": 2,
       "latestWindow": [
-        1.0,
         2.0,
         1.0,
         4.0,
-        1.0
+        1.0,
+        2.0
       ]
     },
     {
@@ -272,20 +273,20 @@
         2.4,
         1.0,
         1.8,
-        2.0
+        1.0
       ],
-      "change": 0.2,
+      "change": -0.8,
       "tier": "低活",
       "warning": false,
       "previousTier": "低活",
       "lowStreak": 5,
-      "latest": 2,
+      "latest": 0,
       "latestWindow": [
-        3.0,
         0,
         1.0,
         1.0,
-        2.0
+        2.0,
+        0
       ]
     },
     {
@@ -295,20 +296,20 @@
         6.8,
         6.5,
         5.5,
-        8.0
+        6.0
       ],
-      "change": 2.5,
+      "change": 0.5,
       "tier": "普通",
       "warning": false,
       "previousTier": "普通",
-      "lowStreak": 2,
-      "latest": 8,
+      "lowStreak": 1,
+      "latest": 4,
       "latestWindow": [
-        4.0,
         4.0,
         10.0,
         9.0,
-        8.0
+        8.0,
+        4.0
       ]
     },
     {
@@ -318,20 +319,20 @@
         8.4,
         6.0,
         7.5,
-        8.0
+        5.5
       ],
-      "change": 0.5,
+      "change": -2.0,
       "tier": "普通",
       "warning": false,
       "previousTier": "普通",
-      "lowStreak": 0,
-      "latest": 8,
+      "lowStreak": 1,
+      "latest": 3,
       "latestWindow": [
-        11.0,
         6.0,
         8.0,
         8.0,
-        8.0
+        8.0,
+        3.0
       ]
     },
     {
@@ -364,20 +365,20 @@
         2.0,
         2.1,
         1.0,
-        2.0
+        1.0
       ],
-      "change": 1.0,
+      "change": 0.0,
       "tier": "低活",
       "warning": false,
       "previousTier": "低活",
       "lowStreak": 5,
-      "latest": 2,
+      "latest": 0,
       "latestWindow": [
         0,
-        0,
         1.0,
         1.0,
-        2.0
+        2.0,
+        0
       ]
     },
     {
@@ -387,20 +388,20 @@
         4.8,
         5.0,
         3.2,
-        3.0
+        2.5
       ],
-      "change": -0.2,
+      "change": -0.7,
       "tier": "低活",
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 5,
-      "latest": 3,
+      "latest": 2,
       "latestWindow": [
-        4.0,
         0,
         4.0,
         4.0,
-        3.0
+        3.0,
+        2.0
       ]
     },
     {
@@ -442,9 +443,9 @@
       "lowStreak": 5,
       "latest": 2,
       "latestWindow": [
-        2.0,
         1.0,
         0,
+        2.0,
         2.0,
         2.0
       ]
@@ -456,20 +457,20 @@
         13.2,
         12.1,
         11.4,
-        8.0
+        9.0
       ],
-      "change": -3.4,
+      "change": -2.4,
       "tier": "活跃",
       "warning": false,
       "previousTier": "活跃",
       "lowStreak": 0,
-      "latest": 8,
+      "latest": 10,
       "latestWindow": [
-        15.0,
         10.0,
         12.0,
         12.0,
-        8.0
+        8.0,
+        10.0
       ]
     },
     {
@@ -479,20 +480,20 @@
         3.6,
         5.0,
         3.3,
-        3.0
+        3.5
       ],
-      "change": -0.3,
+      "change": 0.2,
       "tier": "低活",
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 5,
-      "latest": 3,
+      "latest": 4,
       "latestWindow": [
-        3.0,
         2.0,
         2.0,
         4.0,
-        3.0
+        3.0,
+        4.0
       ]
     },
     {
@@ -502,20 +503,20 @@
         9.6,
         6.5,
         5.4,
-        4.0
+        5.0
       ],
-      "change": -1.4,
+      "change": -0.4,
       "tier": "普通",
       "warning": false,
       "previousTier": "普通",
       "lowStreak": 2,
-      "latest": 4,
+      "latest": 6,
       "latestWindow": [
-        6.0,
         4.0,
         5.0,
         4.0,
-        4.0
+        4.0,
+        6.0
       ]
     },
     {
@@ -525,20 +526,20 @@
         13.4,
         11.6,
         15.3,
-        16.0
+        12.5
       ],
-      "change": 0.7,
+      "change": -2.8,
       "tier": "活跃",
       "warning": false,
       "previousTier": "活跃",
       "lowStreak": 0,
-      "latest": 16,
+      "latest": 9,
       "latestWindow": [
-        20.0,
         13.0,
         9.0,
         19.0,
-        16.0
+        16.0,
+        9.0
       ]
     },
     {
@@ -571,20 +572,20 @@
         10.8,
         11.2,
         10.1,
-        13.0
+        9.5
       ],
-      "change": 2.9,
-      "tier": "活跃",
+      "change": -0.6,
+      "tier": "普通",
       "warning": false,
       "previousTier": "活跃",
       "lowStreak": 1,
-      "latest": 13,
+      "latest": 6,
       "latestWindow": [
-        13.0,
         3.0,
         9.0,
         12.0,
-        13.0
+        13.0,
+        6.0
       ]
     }
   ],
@@ -592,7 +593,6 @@
     "high": [],
     "activeTargets": [
       "户外遛宠社",
-      "萌宠美颜社",
       "狗狗总裁办2群"
     ],
     "low": [
@@ -600,9 +600,9 @@
       "猫猫总裁办6群",
       "狗狗托儿所2群",
       "户外遛宠社2群",
-      "猫猫总裁办2群",
       "猫猫总裁办3群",
       "猫猫养老院1群",
+      "猫猫总裁办2群",
       "狗狗总裁办1群",
       "狗狗托儿所",
       "狗狗养老院"
@@ -614,38 +614,38 @@
   "changes": {
     "rising": [
       {
-        "name": "萌宠美颜社",
-        "change": 2.9
-      },
-      {
         "name": "猫猫总裁办4群",
-        "change": 2.5
+        "change": 0.5
       },
       {
-        "name": "猫猫托儿所2群",
-        "change": 1.1
+        "name": "狗狗养老院",
+        "change": 0.2
       },
       {
-        "name": "猫猫养老院1群",
-        "change": 1.0
+        "name": "猫猫托儿所1群",
+        "change": 0.0
+      },
+      {
+        "name": "猫猫托儿所3群",
+        "change": 0.0
       }
     ],
     "falling": [
       {
+        "name": "户外遛宠社",
+        "change": -2.8
+      },
+      {
         "name": "狗狗总裁办2群",
-        "change": -3.4
+        "change": -2.4
+      },
+      {
+        "name": "猫猫总裁办5群",
+        "change": -2.0
       },
       {
         "name": "猫猫总裁办2群",
-        "change": -1.6
-      },
-      {
-        "name": "科学养宠社1群",
-        "change": -1.4
-      },
-      {
-        "name": "猫猫总裁办1群",
-        "change": -1.2
+        "change": -1.1
       }
     ]
   },
