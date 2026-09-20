@@ -148,9 +148,7 @@ export async function onRequest(context) {
   }
 
   // 1. 验证内部密码
-  if (env.REDPET_WRITE_PASSWORD && body.password !== env.REDPET_WRITE_PASSWORD) {
-    return new Response(JSON.stringify({ error: "密码错误" }), { status: 401, headers: { "Content-Type": "application/json" } });
-  }
+    // 已按需求移除保存密码校验（如需恢复，把 REQUIRE_SAVE_PASSWORD 打开并在此处加回校验）
   // 2. 验证日期
   if (!/^\d{4}-\d{2}-\d{2}$/.test(body.date || "")) {
     return new Response(JSON.stringify({ error: "日期格式错误，应为 YYYY-MM-DD" }), {

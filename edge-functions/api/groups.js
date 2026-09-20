@@ -65,9 +65,7 @@ export async function onRequest(context) {
   } catch (e) {
     return new Response(JSON.stringify({ error: "bad json" }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
-  if (env.REDPET_WRITE_PASSWORD && body.password !== env.REDPET_WRITE_PASSWORD) {
-    return new Response(JSON.stringify({ error: "密码错误" }), { status: 401, headers: { "Content-Type": "application/json" } });
-  }
+    // 已按需求移除保存密码校验（如需恢复，把 REQUIRE_SAVE_PASSWORD 打开并在此处加回校验）
   if (!Array.isArray(body.groups)) {
     return new Response(JSON.stringify({ error: "groups 必须是数组" }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
