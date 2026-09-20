@@ -458,7 +458,14 @@ async function saveFill(){
     renderDashboard(); if(dashboardSection==="fill") renderFill();
   }catch(err){
     // 失败保留用户已填内容，不清空输入框
-    status.textContent="保存失败："+err.message+"（内容已保留，可点重试）";status.className="fill-status err";
+    const msg=String((err&&err.message)||err);
+    if(msg.indexOf("密码错误")>=0){
+      try{localStorage.removeItem("redpet_save_password");}catch(e){}
+      status.textContent="密码不对，请重新输入";status.className="fill-status err";
+      ensurePassword().then(function(np){ if(np){ saveFill(); } }).catch(function(){});
+      return;
+    }
+    status.textContent="保存失败："+msg+"（内容已保留，可点重试）";status.className="fill-status err";
   }
 }
 function exportData(){
