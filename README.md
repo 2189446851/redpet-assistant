@@ -1,0 +1,112 @@
+# REDPET 社群活跃度看板
+
+小红书「萌宠幼儿园」社群运营看板。纯静态站点，部署在 GitHub Pages（源目录 `docs/`），**无需任何后端、无需定时爬表**。
+
+> ⚠️ 本仓库已彻底移除「企业微信自动爬表」的旧链路（旧的 `dist/` 构建产物、`.github/workflows/daily-sync.yml`、`work/wecom-sync/` 已全部删除）。现在数据完全由人在面板里**每天手动填写**。
+
+---
+
+## 一、三大改进（本次重构）
+
+1. **填报极简化**：去掉了繁琐的自动爬表。数据面板内置「每日填写」页，打开默认就是**应填「昨天」**，填完保存即写入仓库；旁边「历史数据」可看每个社群每天的发言人数与活跃度走势。
+2. **新增潜在分层**：在原有「潜在低活」基础上，新增「潜在高活」「潜在活跃」两档，判定标准与潜在低活一致（看近 5 个有效日）：
+   - 潜在高活 = 当前未达「高活」档，但近 5 日有 ≥2 天发言 ≥20 人
+   - 潜在活跃 = 当前为「普通」档，但近 5 日有 ≥2 天发言 ≥10 人
+   - 潜在低活（预警）= 当前为「普通」档，且最长连续低活（<5 人）天数 ≥3
+3. **变化走势可见**：「趋势分析」里每个上升/下降的社群都带一条**真实每日活跃度迷你折线（sparkline）**，并标注 `起始档位 → 当前档位`（如 `普通 → 低活`），不再只显示涨跌幅。
+
+---
+
+## 二、日常使用流程
+
+1. 打开看板首页 → 点「数据总览 / 趋势分析 / 社群明细 / 每日填写」任意一个标签。
+2. 点「**每日填写**」：
+   - 页面顶部会显示「应填日期：X月X日（即昨天的发言人数）」——默认就是昨天，不用自己算。
+   - 每个社群一行输入框，填当天的发言人数（填过的有底色标记）。
+   - 点「保存」写入仓库（需已配置令牌，见下）；未配置令牌时自动导出备份文件，之后手动导入即可。
+3. 历史数据：填写页下方「历史数据」用色块柱展示每个社群最近 10 天的发言人数（≥20 红 / ≥10 橙 / >0 蓝）。
+
+---
+
+## 三、配置填报令牌（GitHub Fine-grained PAT）
+
+「保存」功能通过 GitHub Contents API 直接把 `docs/data/daily.json` 写回仓库，需要一个**仅限本仓库、仅 Contents 读写**的细粒度令牌：
+
+1. GitHub → Settings → Developer settings → **Personal access tokens → Fine-grained tokens** → Generate new token。
+2. Token name 随便（如 `redpet-fill`）；Expiration 按需（建议设长一点，比如 1 年，或 365 天）。
+3. Repository access 选 **Only select repositories** → 选 `2189446851/redpet-assistant`。
+4. Permissions → Repository permissions → **Contents：Read and write**（其余保持 No access）。
+5. Generate，复制令牌（只显示一次）。
+6. 打开看板 → 右上角「**设置**」→ 粘贴令牌 → 保存。状态会显示「已配置令牌，填写可直接保存回仓库」。
+
+> 令牌只存在你浏览器的 localStorage，不会上传到任何服务器。换电脑/清缓存后重新粘贴一次即可。
+> 该令牌也可用于把本仓库推送到 GitHub（见第四节），两种用途同一令牌，不用建两个。
+
+---
+
+## 四、部署 / 更新
+
+- GitHub Pages 源目录固定为 **`docs/`**（在仓库 Settings → Pages 里确认 Source = `main` 分支 `/docs` 文件夹）。
+- 任何对 `docs/` 的推送都会触发 Pages 自动重新部署（约 1 分钟内生效）。
+- 首次上线或改完代码后，把本地改动推到 `main`：
+  ```bash
+  git add docs README.md
+  git commit -m "manual-fill dashboard"
+  git push origin main
+  ```
+  若用令牌推送：`git push https://<TOKEN>@github.com/2189446851/redpet-assistant.git main`
+- **日常填数据不需要动 git**：填完点保存，令牌直接写 `docs/data/daily.json` 并触发部署。
+
+---
+
+## 五、数据格式（`docs/data/daily.json`）
+
+```jsonc
+{
+  "version": 1,
+  "updatedAt": "ISO 时间",
+  "note": "备注",
+  "groups": [ { "name": "猫猫托儿所1群", "size": 230 } ],   // size 可选，社群人数
+  "records": {
+    "2026-09-14": { "猫猫托儿所1群": 7, "猫猫托儿所2群": 3 },
+    "2026-09-15": { "猫猫托儿所1群": 5 }
+    // 日期(ISO) -> 群名 -> 当天发言人数
+  }
+}
+```
+
+- 四档判定（基于每个社群近 5 个**有效日**的发言人数）：
+  - **高活**：近 5 日中 ≥3 天 ≥20 人
+  - **活跃**：近 5 日中 ≥3 天 ≥10 人
+  - **低活**：近 5 日每天 <5 人
+  - **普通**：其余
+- 所有计算都在浏览器端 `index.html` 里实时完成，不依赖任何后端。
+
+> 初始种子数据截止 **2026-09-14**（由历史半月均值确定性重建 + 最近 5 天真实值覆盖）。首次恢复填写后，请从「昨天」起逐日补录，缺口日期留空不影响其他计算。
+
+---
+
+## 六、目录结构（当前）
+
+```
+redpet-assistant/
+├── docs/                      # ← GitHub Pages 源目录（部署只看这里）
+│   ├── index.html             # 单文件 SPA（看板全部逻辑）
+│   ├── .nojekyll              # 禁用 Jekyll，保证静态原样托管
+│   ├── data/daily.json        # 日常填写的数据存储
+│   ├── assistant-icon.jpg     # 小助手图标
+│   └── icon-*.png / manifest.webmanifest
+├── work/                      # 本地开发工具（已被 .gitignore 忽略，不进仓库）
+│   ├── gen_initial_data.py    # 由旧 dashboard-data.json 生成初始 daily.json
+│   └── check.js               # 校验 index.html 内联 JS 与计算逻辑
+└── README.md                  # 本文件
+```
+
+---
+
+## 七、交接说明（给接手的同学）
+
+- 这个看板**不需要每天跑脚本**，运营每天花 2 分钟在「每日填写」页填数即可。
+- 唯一外部依赖是 GitHub Pages（免费）和一个 fine-grained PAT（见第三节），都在公司/个人 GitHub 账号下，离职前把仓库 + 令牌说明交接清楚即可。
+- 「小助手」标签页是单独接的 Coze 智能体（projectId 硬编码在 `index.html` 的 `initAssistant` 里），和看板数据无关，要换模型改那一处即可。
+- 数据全部在 `docs/data/daily.json`，想备份直接点填写页「导出」或 `git clone` 仓库。
