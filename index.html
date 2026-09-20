@@ -490,7 +490,15 @@ async function loadDashboard(){
     if(res.ok){
       const fresh=await res.json();
       if(fresh && fresh.groups && fresh.records){
-        rawData=fresh; dashboard=computeModel(rawData); renderDashboard(); refreshTokenState();
+        rawData=fresh;
+        try{
+          dashboard=computeModel(rawData); renderDashboard();
+        }catch(ce){
+          showOfflineBanner(false);
+          const meta=document.getElementById("dashboardMeta");
+          if(meta) meta.textContent="已连接飞书，但还没有每日数据，请在「每日填写」保存一条";
+        }
+        refreshTokenState();
         cacheLocal(fresh); return;
       }
     }

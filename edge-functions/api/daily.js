@@ -15,6 +15,9 @@
 
 const API_BASE = "https://open.feishu.cn/open-apis";
 const RESERVED = ["日期", "更新时间", "填写人"];
+// 飞书「日期」字段写入时必须用毫秒时间戳，字符串会被拒绝(DatetimeFieldConvFail)
+function dateToMs(dstr){ return new Date(dstr + "T00:00:00+08:00").getTime(); }
+function nowMs(){ return Date.now(); }
 
 async function getToken(env) {
   const r = await fetch(API_BASE + "/auth/v3/tenant_access_token/internal", {
@@ -182,7 +185,7 @@ export async function onRequest(context) {
 
   // 5 & 6. upsert
   const found = await findRecordByDate(env, body.date);
-  const fields = { 日期: body.date, 更新时间: nowStr(), 填写人: body.writer || "" };
+  const fields = { 日期: dateToMs(body.date), 更新时间: nowMs(), 填写人: body.writer || "" };
   Object.keys(values).forEach((k) => (fields[k] = values[k]));
 
   try {
