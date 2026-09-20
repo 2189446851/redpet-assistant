@@ -65,7 +65,7 @@ export async function onRequest(context) {
   } catch (e) {
     return new Response(JSON.stringify({ error: "bad json" }), { status: 400, headers: { "Content-Type": "application/json" } });
   }
-  if (!body.password || body.password !== env.REDPET_WRITE_PASSWORD) {
+  if (env.REDPET_WRITE_PASSWORD && body.password !== env.REDPET_WRITE_PASSWORD) {
     return new Response(JSON.stringify({ error: "密码错误" }), { status: 401, headers: { "Content-Type": "application/json" } });
   }
   if (!Array.isArray(body.groups)) {
