@@ -378,6 +378,7 @@ function eoAuth(extra){
 function getStoredPassword(){ try{return localStorage.getItem("redpet_save_password")||"";}catch(e){return "";} }
 function cacheLocal(data){ try{localStorage.setItem("redpet_local_cache",JSON.stringify(data));}catch(e){} }
 function readLocal(){ try{const x=localStorage.getItem("redpet_local_cache");return x?JSON.parse(x):null;}catch(e){return null;} }
+function refreshTokenState(){ /* 令牌相关 UI 已移除，保留空实现以兼容旧调用，避免加载成功时报错 */ }
 function showOfflineBanner(show,src){
   const el=document.getElementById("offlineBanner");
   if(!el) return;
