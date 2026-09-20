@@ -365,6 +365,16 @@ function renderManage(){
   document.getElementById("groupList").innerHTML=rawData.groups.map(g=>`<div class="fill-row"><span class="fn">${escapeHTML(g.name)}</span><span class="muted" style="margin-right:8px">规模 ${g.size!=null?g.size:"未记"}</span><button class="save-btn secondary" type="button" data-remove="${escapeHTML(g.name)}">移除</button></div>`).join("");
   document.querySelectorAll("#groupList [data-remove]").forEach(b=>b.addEventListener("click",()=>removeGroup(b.dataset.remove)));
 }
+function eoAuth(extra){
+  try{
+    const q=new URLSearchParams(location.search);
+    const t=q.get("eo_token"); if(!t) return extra?("?"+extra):"";
+    const p=new URLSearchParams(extra||"");
+    p.set("eo_token",t);
+    const m=q.get("eo_time"); if(m) p.set("eo_time",m);
+    return "?"+p.toString();
+  }catch(e){ return extra?("?"+extra):""; }
+}
 function getStoredPassword(){ try{return localStorage.getItem("redpet_save_password")||"";}catch(e){return "";} }
 function cacheLocal(data){ try{localStorage.setItem("redpet_local_cache",JSON.stringify(data));}catch(e){} }
 function readLocal(){ try{const x=localStorage.getItem("redpet_local_cache");return x?JSON.parse(x):null;}catch(e){return null;} }
@@ -399,10 +409,10 @@ async function persistRaw(message,statusEl){
   try{ password=await ensurePassword(); }catch(e){ if(statusEl){statusEl.textContent="已取消（未输入密码）";statusEl.className="fill-status";} return false; }
   if(!password){ if(statusEl){statusEl.textContent="未配置保存密码";statusEl.className="fill-status err";} return false; }
   try{
-    const res=await fetch(API_GROUPS,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({groups:rawData.groups,password:password})});
+    const res=await fetch(API_GROUPS+eoAuth(""),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({groups:rawData.groups,password:password})});
     const j=await res.json().catch(()=>({}));
     if(!res.ok||!j.ok) throw new Error(j.error||("服务器返回 "+res.status));
-    try{ const r2=await fetch(API_DATA+"?t="+Date.now(),{cache:"no-store"}); if(r2.ok){const fresh=await r2.json(); if(fresh&&fresh.groups){rawData=fresh; dashboard=computeModel(rawData);} } }catch(e){}
+    try{ const r2=await fetch(API_DATA+eoAuth("t="+Date.now()),{cache:"no-store"}); if(r2.ok){const fresh=await r2.json(); if(fresh&&fresh.groups){rawData=fresh; dashboard=computeModel(rawData);} } }catch(e){}
     return true;
   }catch(err){if(statusEl){statusEl.textContent="保存失败："+err.message;statusEl.className="fill-status err";}return false;}
 }
@@ -439,7 +449,7 @@ async function saveFill(){
   if(!password){status.textContent="未配置保存密码";status.className="fill-status err";return;}
   status.textContent="保存中…";status.className="fill-status";
   try{
-    const res=await fetch(API_DAILY,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:fillDateStr,values:values,password:password})});
+    const res=await fetch(API_DAILY+eoAuth(""),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({date:fillDateStr,values:values,password:password})});
     const j=await res.json().catch(()=>({}));
     if(!res.ok||!j.ok) throw new Error(j.error||("服务器返回 "+res.status));
     if(j.data){rawData=j.data; dashboard=computeModel(rawData);}
@@ -476,7 +486,7 @@ async function loadDashboard(){
   }catch(e){ console.error("内嵌数据渲染失败",e); }
   // 后台尝试拉取最新在线数据
   try{
-    const res=await fetch(API_DATA+"?t="+Date.now(),{cache:"no-store"});
+    const res=await fetch(API_DATA+eoAuth("t="+Date.now()),{cache:"no-store"});
     if(res.ok){
       const fresh=await res.json();
       if(fresh && fresh.groups && fresh.records){
