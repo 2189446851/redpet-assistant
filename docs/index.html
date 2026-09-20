@@ -19,7 +19,7 @@
     :root{color-scheme:light;--bg:#fff8df;--surface:#fffefa;--line:#eadcb8;--text:#1d2433;--muted:#756b5d;--blue:#315bc6;--blue-dark:#274ba7;--blue-soft:#eef3ff;--green:#239371;--red:#f15e4b;--shadow:0 12px 28px rgba(86,65,30,.09)}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px;background:linear-gradient(180deg,#fff4c9 0,#fff9e8 30%,#f5f9ff 100%);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:16px;line-height:1.5}button,input,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}.shell{max-width:1380px;margin:0 auto;padding:0 28px 52px}
     .site-header{min-height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(203,157,56,.28)}.brand{display:inline-flex;align-items:center;gap:12px;color:var(--text);text-decoration:none;font-weight:800;letter-spacing:-.025em}.mark{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#ff765f,#ef5645);box-shadow:0 8px 18px rgba(241,94,75,.23);overflow:hidden}.mark img{width:100%;height:100%;object-fit:cover;display:block}
-    .gear-btn{border:1px solid #e0c777;border-radius:10px;padding:9px 12px;color:#66531f;background:#fff8dc;cursor:pointer;font-size:14px;font-weight:680;display:inline-flex;align-items:center;gap:6px}
+
     .page{padding-top:34px}.eyebrow{margin:0 0 9px;color:var(--blue-dark);font-size:13px;font-weight:760;letter-spacing:.06em}h1,h2,h3,p{margin-top:0}h1{margin-bottom:10px;font-size:clamp(30px,4vw,44px);line-height:1.12;letter-spacing:-.045em}
     .entry-grid{display:grid;grid-template-columns:.88fr 1.12fr;gap:20px}.entry-card{min-height:230px;padding:30px;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:26px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden;position:relative}.entry-card::after{content:"";width:210px;height:210px;position:absolute;right:-72px;top:-88px;border-radius:50%;background:var(--entry-halo);opacity:.92}.entry-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:18px;color:var(--entry-icon-color,var(--entry-color));background:var(--entry-soft);position:relative;z-index:1}.entry-icon svg{width:28px;height:28px}.entry-card h2{margin:24px 0 8px;font-size:24px;letter-spacing:-.025em}.entry-card>p{max-width:500px;margin-bottom:20px;color:var(--muted);font-size:15px}.entry-action{width:fit-content;margin-top:auto;display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;padding:12px 17px;color:#fff;background:var(--entry-color);text-decoration:none;font-weight:760;cursor:pointer;box-shadow:0 6px 14px rgba(48,45,38,.12)}.entry-action:hover{filter:brightness(.97);transform:translateY(-1px)}
     .dashboard-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:18px}.dashboard-head h1{margin-bottom:7px;font-size:clamp(28px,3vw,36px)}.dashboard-meta{color:var(--muted);font-size:14px}.back-button{border:1px solid #e0c777;border-radius:10px;padding:9px 12px;color:#66531f;background:#fff8dc;cursor:pointer;font-size:14px;font-weight:680}.rules-inline{margin-bottom:16px;padding:11px 14px;border-left:4px solid var(--green);border-radius:8px;color:#5d584f;background:#f0faf5;font-size:13px;line-height:1.7}.rules-inline strong{color:#176b50;margin-right:6px}.rules-inline .warning-copy{color:#a9500d;margin-left:6px}
@@ -42,7 +42,6 @@
   <div class="shell">
     <header class="site-header">
       <a class="brand" href="#home" data-view-link="home" aria-label="返回首页"><span class="mark" aria-hidden="true"><img src="assistant-icon.jpg" alt="" /></span><span>REDPET小助手</span></a>
-      <button class="gear-btn" type="button" id="openSettings">⚙ 设置</button>
     </header>
     <main>
       <section id="homeView" class="page">
@@ -84,20 +83,11 @@
     </main>
   </div>
 
-  <div class="modal-mask" id="settingsMask" hidden>
-    <div class="modal">
-      <h3>GitHub 保存设置</h3>
-      <p>把每天填写的数据写回这个仓库，手机电脑都能填、自动留版本。需要一枚只限本仓库的 GitHub 令牌（fine-grained，Contents 读写）。令牌只存在你这台浏览器，不会上传到任何地方。</p>
-      <input id="tokenInput" type="password" placeholder="粘贴 gh_ 开头的 fine-grained 令牌" autocomplete="off" />
-      <p class="token-state none" id="tokenState">当前未配置令牌。未配置时仍可填写，但需手动导出 / 导入备份。</p>
-      <div class="modal-actions"><button class="m-cancel" id="tokenCancel" type="button">取消</button><button class="m-ok" id="tokenSave" type="button">保存</button></div>
-    </div>
-  </div>
-
   <script src="https://lf-cdn.coze.cn/obj/unpkg/latest/coze/web-sdk/dist/js-umd/index.min.js"></script>
   <script>
 "use strict";
 const REPO_API="https://api.github.com/repos/2189446851/redpet-assistant/contents/docs/data/daily.json";
+const GITHUB_TOKEN="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";
 let dashboard=null, rawData=null, activeFilter="all", dashboardSection="overview", fillDateStr="", historyOpen=false, historyExpandedGroup=null;
 const escapeHTML=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 const signed=v=>`${v>0?"+":v<0?"−":""}${Math.abs(v).toFixed(1)}`;
@@ -399,14 +389,14 @@ document.getElementById("newGroupSize").addEventListener("keydown",e=>{if(e.key=
 
 function utf8ToBase64(str){return btoa(unescape(encodeURIComponent(str)));}
 function base64ToUtf8(b64){return decodeURIComponent(escape(atob(b64)));}
-function getToken(){return (localStorage.getItem("redpet_github_token")||"").trim();}
+function getToken(){return GITHUB_TOKEN;}
 async function saveFill(){
   const status=document.getElementById("fillStatus");
   const inputs=[...document.querySelectorAll("#fillList input")];
   const values={};
   for(const inp of inputs){const v=inp.value.trim();if(v!==""){const n=Math.max(0,Math.round(+v));if(!isNaN(n)) values[inp.dataset.group]=n;}}
   const token=getToken();
-  if(!token){status.textContent="未配置令牌，已导出备份，请到「设置」填令牌后保存";status.className="fill-status err";exportData();return;}
+  if(!token){status.textContent="未配置令牌，已导出备份";status.className="fill-status err";exportData();return;}
   status.textContent="保存中…";status.className="fill-status";
   try{
     const getRes=await fetch(REPO_API,{headers:{Authorization:"Bearer "+token}});
@@ -432,16 +422,7 @@ document.getElementById("saveFill").addEventListener("click",saveFill);
 document.getElementById("exportFill").addEventListener("click",exportData);
 document.getElementById("toggleHistory").addEventListener("click",()=>{historyOpen=!historyOpen;renderFill();});
 
-const mask=document.getElementById("settingsMask");
-function refreshTokenState(){
-  const s=document.getElementById("tokenState");
-  if(getToken()){s.textContent="已配置令牌，填写可直接保存回仓库。";s.className="token-state set";}
-  else{s.textContent="当前未配置令牌。未配置时仍可填写，但需手动导出 / 导入备份。";s.className="token-state none";}
-}
-document.getElementById("openSettings").addEventListener("click",()=>{document.getElementById("tokenInput").value=getToken();refreshTokenState();mask.hidden=false;});
-document.getElementById("tokenCancel").addEventListener("click",()=>mask.hidden=true);
-document.getElementById("tokenSave").addEventListener("click",()=>{localStorage.setItem("redpet_github_token",document.getElementById("tokenInput").value.trim());mask.hidden=true;refreshTokenState();const s=document.getElementById("fillStatus");if(s){s.textContent="令牌已保存";s.className="fill-status ok";}});
-mask.addEventListener("click",e=>{if(e.target===mask)mask.hidden=true;});
+
 
 let assistantInited=false;
 function initAssistant(){
