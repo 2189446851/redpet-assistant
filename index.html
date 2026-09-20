@@ -491,6 +491,7 @@ async function loadDashboard(){
       const fresh=await res.json();
       if(fresh && fresh.groups && fresh.records){
         rawData=fresh;
+        showOfflineBanner(false);
         try{
           dashboard=computeModel(rawData); renderDashboard();
         }catch(ce){
