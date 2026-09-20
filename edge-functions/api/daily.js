@@ -118,6 +118,7 @@ async function buildFullData(env) {
     for (const k of Object.keys(f)) {
       if (RESERVED.indexOf(k) >= 0) continue;
       if (typeof f[k] === "number") values[k] = f[k];
+      else if (typeof f[k] === "string" && f[k].trim() !== "" && !isNaN(Number(f[k]))) values[k] = Number(f[k]);
     }
     records[date] = values;
     if (date > maxDate) maxDate = date;
