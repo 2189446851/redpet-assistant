@@ -1,0 +1,5 @@
+{
+  "name": "redpet-assistant",
+  "staticRoot": "docs",
+  "functionsDir": "edge-functions"
+}

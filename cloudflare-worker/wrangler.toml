@@ -1,7 +1,0 @@
-name = "redpet-worker"
-main = "worker.js"
-compatibility_date = "2024-09-23"
-
-# 注意：不要把 GITHUB_TOKEN 写在这里！
-# 用命令单独写入： wrangler secret put GITHUB_TOKEN
-# 令牌用之前那把 fine-grained PAT（在 GitHub 后台重新生成一个即可，权限 Contents: Read and write）
