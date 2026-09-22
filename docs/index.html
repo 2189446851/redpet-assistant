@@ -102,6 +102,9 @@
     .bars-set{display:flex;align-items:flex-end;gap:2px;height:26px}
     .bars-set i{width:6px;border-radius:2px 2px 0 0;background:#9ec2f5;display:inline-block;min-height:2px}
     .bars-set i.lo{background:#f2a0b5}
+    /* 数据总览趋势单卡 + 普通档概况窄条（对齐原型结构） */
+    .trend-grid{grid-template-columns:1fr}
+    .normal-strip{padding:10px 14px;font-size:13px;grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -134,10 +137,9 @@
         <div id="dashboardLoading" class="card loading-card">正在整理最新社群数据…</div>
         <div id="dashboardContent" hidden>
           <div class="dashboard-section" data-dashboard-section="overview">
-            <p class="section-intro">最近 7 个有效统计日的四档分布与整体趋势；潜在高活 / 潜在活跃是可冲高的重点。</p>
             <section id="tierSummary" class="tier-summary" aria-label="最近 7 个有效统计日四档汇总"></section>
             <div class="potential-bar" id="potentialBar"></div>
-            <section class="trend-grid"><article class="card panel"><div class="panel-head"><div><h2>全社群活跃趋势</h2><div class="sub">每日全社群活跃人次合计</div></div><span class="tag" id="trendTag"></span></div><div class="line-chart" id="lineChart" role="img" aria-label="全社群活跃趋势折线图"></div><p class="chart-note" id="chartNote"></p></article><article class="card panel"><div class="panel-head"><div><h2>半月变化最大的社群</h2><div class="sub" id="changeSubtitle"></div></div></div><div class="change-columns"><div><div class="change-title">上升最快（含逐日走势）</div><div class="change-list" id="risingList"></div></div><div><div class="change-title">下降明显（含逐日走势）</div><div class="change-list" id="fallingList"></div></div></div></article></section>
+            <section class="trend-grid"><article class="card panel"><div class="panel-head"><div><h2>活跃趋势</h2><div class="sub">每日全社群活跃人次合计</div></div><span class="tag" id="trendTag"></span></div><div class="line-chart" id="lineChart" role="img" aria-label="全社群活跃趋势折线图"></div><p class="chart-note" id="chartNote"></p><p class="chart-note" id="halfNote"></p></article></section>
           </div>
           <div class="dashboard-section" data-dashboard-section="analysis" hidden>
             <p class="section-intro">需要动作的社群优先处理；明细可切「历史数据」查看各群逐日发言次数。</p>
@@ -145,7 +147,7 @@
               <article class="card focus-card" style="--focus-color:#2c9d7a;--chip-bg:#e8f8f1;--chip-text:#176b50"><div class="focus-head"><h2>高活与潜在高活</h2><span class="focus-count" id="highCount"></span></div><p class="focus-copy" id="highCopy"></p><div class="focus-list" id="highList"></div><div class="focus-divider"></div><p class="focus-sub">潜在高活（近 7 日有 3 日 ≥20 人）</p><div class="focus-list" id="potHighList"></div><p class="focus-note">下一步：复用高参与话题，为活跃社群安排一次集中活动，争取一周出现 4 个 20+ 活跃日。</p></article>
               <article class="card focus-card" style="--focus-color:#315bc6;--chip-bg:#e8efff;--chip-text:#274ba7"><div class="focus-head"><h2>活跃与潜在活跃</h2><span class="focus-count" id="activeCount"></span></div><p class="focus-copy" id="activeCopy"></p><div class="focus-list" id="activeList"></div><div class="focus-divider"></div><p class="focus-sub">潜在活跃（普通档 + 近 7 日有 3 日 ≥10 人）</p><div class="focus-list" id="potActiveList"></div><p class="focus-note">下一步：给这些社群定向抛话题、做轻互动，把它们稳住到正式活跃。</p></article>
               <article class="card focus-card" style="--focus-color:#f15e4b;--chip-bg:#fff0ed;--chip-text:#b93b2b"><div class="focus-head"><h2>低活与预警</h2><span class="focus-count" id="lowCount"></span></div><p class="focus-copy" id="lowCopy"></p><div class="focus-list" id="lowList"></div><div class="focus-divider"></div><p class="focus-sub" id="warningSub">低活预警</p><div class="focus-list" id="warningList"></div><p class="focus-note" id="warningCopy"></p></article>
-              <article class="card focus-card" style="--focus-color:#d18b24;--chip-bg:#fff6d8;--chip-text:#916018"><div class="focus-head"><h2>普通档概况</h2><span class="focus-count" id="normalCount"></span></div><p class="focus-copy">以下社群处于普通档，暂无需紧急动作；留意其中带潜在标记的社群。</p><div class="focus-list" id="normalList"></div></article>
+              <div class="card normal-strip"><b>普通档概况</b> <span class="muted" id="normalCount"></span> <span class="muted">发言稳定，无需干预</span></div>
             </section>
             <section class="card table-panel"><div class="table-toolbar detail-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="sub">各社群逐日发言次数，柱子越高越活跃</div></div><div class="detail-actions"><button class="save-btn secondary compact" type="button" id="tgDetailHist">查看历史数据 ▾</button><button class="save-btn secondary compact" type="button" id="exportFill2">导出备份</button></div></div><div id="barsList" class="bars-list"></div><p class="fill-hint" style="margin:8px 20px 0">↗「每日活跃快照」已移至【每日填写 → 历史数据】内</p><div id="historyTablePanel" hidden style="padding:0 20px 16px"><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section>
           </div>
@@ -1312,12 +1314,8 @@ const chipList=(names,emptyText)=>names.length?names.map(n=>`<span class="group-
 function renderTierSummary(){
   const cfg={高活:["近 7 日中至少 4 日达到 20+ 人"],活跃:["近 7 日中至少 4 日达到 10+ 人"],普通:["其余社群"],低活:["近 7 个有效日每日活跃人数低于 5"]};
   document.getElementById("tierSummary").innerHTML=TIERS.map(t=>`<article class="card tier-card" style="--tier-color:${tierColor[t]}"><div class="tier-label">${t}社群</div><div class="tier-number"><strong>${dashboard.tierCounts[t]}</strong><span>个群</span></div><small>${cfg[t][0]}</small></article>`).join("");
-  const newCount=dashboard.groups.filter(g=>!g.hasData).length;
-  document.getElementById("potentialBar").innerHTML=
-    `<span class="potential-pill pot-high">潜在高活 <b>${dashboard.potentialHighCount}</b> 个</span>`+
-    `<span class="potential-pill pot-active">潜在活跃 <b>${dashboard.potentialActiveCount}</b> 个</span>`+
-    `<span class="potential-pill pot-low">潜在低活 <b>${dashboard.warningCount}</b> 个</span>`+
-    (newCount?`<span class="potential-pill pot-new">新群待填 <b>${newCount}</b> 个</span>`:"");
+  const pb=document.getElementById("potentialBar");
+  if(pb){pb.innerHTML="";pb.hidden=true;}
 }
 function renderFocus(){
   const f=dashboard.focus;
@@ -1336,7 +1334,7 @@ function renderFocus(){
   document.getElementById("warningList").innerHTML=chipList(f.warning,"无预警");
   document.getElementById("warningCopy").textContent=f.warning.length?"预警仍归普通档，但已连续 5–6 日贴近低活，尽快干预。":"当前没有低活预警。";
   document.getElementById("normalCount").textContent=`${f.normal.length} 个`;
-  document.getElementById("normalList").innerHTML=chipList(f.normal,"—");
+  const nl=document.getElementById("normalList"); if(nl) nl.innerHTML=chipList(f.normal,"—");
 }
 function sparkline(series,color){
   if(!series||series.length<2) return "";
@@ -1361,16 +1359,9 @@ function renderTrend(){
   tag.textContent=`较上半月 ${c>0?"+":c<0?"−":""}${Math.abs(c).toFixed(1)}%`;
   tag.style.setProperty("--tag-color",c>=0?"#16713a":"#b91c42"); tag.style.setProperty("--tag-bg",c>=0?"#edf9f0":"#fff0f3");
   document.getElementById("chartNote").textContent=`数据截止 ${dashboard.latestDate}，折线展示最近 ${points.length} 个有效统计日。`;
-  const periods=dashboard.periods;
-  document.getElementById("changeSubtitle").textContent=`${periods.at(-1).label}日均 对比 ${periods.at(-2).label}`;
-  const renderChange=(el,arr,color)=>{
-    document.getElementById(el).innerHTML=arr.length?arr.map(g=>{
-      const spark=sparkline(g.dailySeries,color);
-      return `<div class="change-row"><div class="change-main"><span class="change-name">${escapeHTML(g.name)} ${signed(g.change)}</span>${changePathText(g)}</div>${spark}</div>`;
-    }).join(""):`<div class="change-row muted">暂无</div>`;
-  };
-  renderChange("risingList",dashboard.changes.rising,"#2c9d7a");
-  renderChange("fallingList",dashboard.changes.falling,"#f15e4b");
+  const rl=dashboard.changes.rising, fl=dashboard.changes.falling;
+  const hn=document.getElementById("halfNote");
+  if(hn) hn.textContent=`半月上升最快：${rl.length?escapeHTML(rl[0].name)+" "+signed(rl[0].change):"—"} · 下降明显：${fl.length?escapeHTML(fl[0].name)+" "+signed(fl[0].change):"—"}`;
 }
 function renderFilters(){
   const d=dashboard;
