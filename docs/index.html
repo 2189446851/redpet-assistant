@@ -92,16 +92,21 @@
       .hist-x td.gname{text-align:left}
     }
 
-    /* 活跃度明细：柱状图（对齐原型 w11 明细结构） */
+    /* 活跃度明细：柱状图（每群一行，柱顶标人数，底部日期轴） */
     .detail-toolbar{align-items:center}
     .detail-actions{display:flex;gap:8px;flex:0 0 auto}
-    .bars-list{padding:6px 20px 4px}
-    .bars-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed #efe7d3}
+    .bars-list{padding:26px 20px 2px}
+    .bars-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px dashed #efe7d3}
     .bars-row:last-child{border-bottom:0}
-    .bars-name{font-size:13px;font-weight:640;color:#4a463d;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .bars-set{display:flex;align-items:flex-end;gap:2px;height:26px}
-    .bars-set i{width:6px;border-radius:2px 2px 0 0;background:#9ec2f5;display:inline-block;min-height:2px}
+    .bars-name{flex:0 0 128px;font-size:13px;font-weight:640;color:#4a463d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;align-self:center}
+    .bars-set{display:flex;align-items:flex-end;gap:10px;height:44px}
+    .bars-set i{position:relative;width:16px;border-radius:3px 3px 0 0;background:#9ec2f5;display:inline-block;min-height:4px}
     .bars-set i.lo{background:#f2a0b5}
+    .bars-set i b{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:#5a6578;font-style:normal}
+    .bars-axis{display:flex;justify-content:space-between;gap:16px;padding:8px 20px 16px;border-top:1px solid #f0e9d8}
+    .bars-axis .bars-name{visibility:hidden}
+    .bars-set.ax-set{height:14px;align-items:center}
+    .bars-set.ax-set i{width:16px;min-height:0;background:none;border-radius:0;text-align:center;line-height:14px;font-size:10px;color:#9aa0a6;font-weight:600}
     /* 数据总览趋势单卡 + 普通档概况窄条（对齐原型结构） */
     .trend-grid{grid-template-columns:1fr}
     .normal-strip{padding:10px 14px;font-size:13px;grid-column:1/-1}
@@ -133,7 +138,7 @@
         <div class="dashboard-head"><div><p class="eyebrow">社群活跃度</p><h1>社群数据看板</h1><div class="dashboard-meta" id="dashboardMeta">正在读取数据…</div>
         <div id="offlineBanner" class="offline-banner" hidden></div></div><button class="back-button" type="button" data-view-link="dashHome">← 返回看板首页</button></div>
         <div class="rules-inline"><strong>最近 7 个有效统计日规则</strong>高活：至少 4 日 ≥20 人；活跃：至少 4 日 ≥10 人；低活：连续 7 日每日 &lt;5 人；其余为普通。<span class="warning-copy">按高活 → 活跃 → 低活 → 普通依次判定。潜在档＝「差一点就够」的边缘社群：潜在高活（近 7 日有 3 日 ≥20 人）、潜在活跃（普通档 + 近 7 日有 3 日 ≥10 人）、潜在低活（普通档 + 连续 5–6 日 &lt;5 人）。</span></div>
-        <nav class="dashboard-tabs" aria-label="活跃度板块"><button class="dashboard-tab" type="button" data-dashboard-link="overview">数据总览</button><button class="dashboard-tab" type="button" data-dashboard-link="analysis">活跃度分析</button><button class="dashboard-tab" type="button" data-dashboard-link="fill">每日填写</button><button class="dashboard-tab" type="button" data-dashboard-link="manage">社群管理</button></nav>
+        <nav class="dashboard-tabs" aria-label="活跃度板块"><button class="dashboard-tab" type="button" data-dashboard-link="overview">数据总览</button><button class="dashboard-tab" type="button" data-dashboard-link="analysis">活跃度分析</button><button class="dashboard-tab" type="button" data-dashboard-link="fill">每日填写</button></nav>
         <div id="dashboardLoading" class="card loading-card">正在整理最新社群数据…</div>
         <div id="dashboardContent" hidden>
           <div class="dashboard-section" data-dashboard-section="overview">
@@ -149,7 +154,7 @@
               <article class="card focus-card" style="--focus-color:#f15e4b;--chip-bg:#fff0ed;--chip-text:#b93b2b"><div class="focus-head"><h2>低活与预警</h2><span class="focus-count" id="lowCount"></span></div><p class="focus-copy" id="lowCopy"></p><div class="focus-list" id="lowList"></div><div class="focus-divider"></div><p class="focus-sub" id="warningSub">低活预警</p><div class="focus-list" id="warningList"></div><p class="focus-note" id="warningCopy"></p></article>
               <div class="card normal-strip"><b>普通档概况</b> <span class="muted" id="normalCount"></span> <span class="muted">发言稳定，无需干预</span></div>
             </section>
-            <section class="card table-panel"><div class="table-toolbar detail-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="sub">各社群逐日发言次数，柱子越高越活跃</div></div><div class="detail-actions"><button class="save-btn secondary compact" type="button" id="tgDetailHist">查看历史数据 ▾</button><button class="save-btn secondary compact" type="button" id="exportFill2">导出备份</button></div></div><div id="barsList" class="bars-list"></div><p class="fill-hint" style="margin:8px 20px 0">↗「每日活跃快照」已移至【每日填写 → 历史数据】内</p><div id="historyTablePanel" hidden style="padding:0 20px 16px"><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section>
+            <section class="card table-panel"><div class="table-toolbar detail-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="sub">各社群逐日发言次数，柱子越高越活跃</div></div><div class="detail-actions"><button class="save-btn secondary compact" type="button" id="exportFill2">导出备份</button></div></div><div id="barsList" class="bars-list"></div><div id="barsAxis" class="bars-axis"></div><div id="historyTablePanel" hidden style="padding:0 20px 16px"><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section>
           </div>
           <div class="dashboard-section" data-dashboard-section="fill" hidden>
             <div class="mode-strip" id="modeStrip">⚡ 当前自动从企微表格拉取 · <a id="modeToggle">切手动</a></div>
@@ -173,7 +178,7 @@
               </div>
             </div>
           </div>
-          <div class="dashboard-section" data-dashboard-section="manage" hidden><div class="fill-layout"><div class="fill-card"><div class="fill-head"><h2>添加社群</h2></div><p class="fill-hint">填群名和大致规模（成员数，可填 0 暂不记）。新增后它会出现在「每日填写」和全部看板里。</p><div class="manage-add-row"><input id="newGroupName" type="text" placeholder="群名，如 猫猫托儿所5群" class="manage-input" /><input id="newGroupSize" type="number" min="0" placeholder="规模" class="manage-input size" /></div><div class="fill-actions"><button class="save-btn compact" id="addGroupBtn" type="button">添加社群</button><span class="fill-status" id="manageStatus"></span></div></div><div class="fill-card"><div class="fill-head"><h2>全部社群（<span id="groupCount">0</span> 个）</h2></div><p class="fill-hint">点「移除」可删除该群（同时删除其历史记录）。想暂停但保留数据就先别删。</p><div class="fill-list" id="groupList"></div></div></div></div>
+        </div>
         </div>
         <div id="dashboardError" class="error-box" hidden></div>
       </section>
@@ -1299,14 +1304,14 @@ function showView(view,section){
   document.getElementById("scaleView").hidden=!isS;
   document.getElementById("assistantView").hidden=!isA;
   if(isA){history.replaceState(null,"","#assistant");initAssistant();}
-  else if(isD){showDashboardSection(section||"overview",{updateHash:true,scroll:false}); if((section||"overview")==="fill") renderFill(); if(section==="manage") renderManage();}
+  else if(isD){showDashboardSection(section||"overview",{updateHash:true,scroll:false}); if((section||"overview")==="fill") renderFill();}
   else if(isS){showScaleSection(section||"scov",{updateHash:true,scroll:false}); if((section||"scov")==="scfill") renderScaleFill();}
   else if(isH){history.replaceState(null,"","#dash");}
   else history.replaceState(null,"","#home");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll("[data-view-link]").forEach(c=>c.addEventListener("click",e=>{const v=c.dataset.viewLink;if(v){e.preventDefault();showView(v);}}));
-document.querySelectorAll("[data-dashboard-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.dashboardLink;showDashboardSection(s);if(s==="fill")renderFill();if(s==="manage")renderManage();}));
+document.querySelectorAll("[data-dashboard-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.dashboardLink;showDashboardSection(s);if(s==="fill")renderFill();}));
 document.querySelectorAll("[data-scale-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.scaleLink;showScaleSection(s);if(s==="scfill")renderScaleFill();}));
 
 const chipList=(names,emptyText)=>names.length?names.map(n=>`<span class="group-chip">${escapeHTML(n.name||n)}</span>`).join(""):`<span class="muted">${escapeHTML(emptyText)}</span>`;
@@ -1394,18 +1399,20 @@ function renderBars(){
   const el=document.getElementById("barsList");
   if(!el||!rawData||!dashboard) return;
   const allDs=dashboard.allDates||[];
-  const show=allDs.slice(-16);
+  const show=allDs.slice(-7);
+  const lab=d=>`${+d.split("-")[1]}/${+d.split("-")[2]}`;
   el.innerHTML=dashboard.groups.map(g=>{
     const bars=show.map(d=>{
       const v=(rawData.records[d]||{})[g.name];
       const n=(v==null||v==="")?null:Number(v);
-      const h=n==null?2:Math.max(2,Math.min(26,Math.round(n/20*26)));
-      const lo=(n!=null&&n<5)?" lo":"";
-      const t=`${+d.split("-")[1]}/${+d.split("-")[2]} · ${n==null?"—":n+"人"}`;
-      return `<i class="${lo}" style="height:${h}px" title="${t}"></i>`;
+      const h=n==null?4:Math.max(4,Math.min(26,Math.round(n/24*26)));
+      const lo=(n==null||n<5)?" lo":"";
+      return `<i class="${lo}" style="height:${h}px"><b>${n==null?"—":n}</b></i>`;
     }).join("");
     return `<div class="bars-row"><span class="bars-name" title="${escapeHTML(g.name)}">${escapeHTML(g.name)}</span><span class="bars-set">${bars}</span></div>`;
   }).join("");
+  const ax=document.getElementById("barsAxis");
+  if(ax) ax.innerHTML=`<span class="bars-name"></span><span class="bars-set ax-set">${show.map(d=>`<i>${lab(d)}</i>`).join("")}</span>`;
 }
 function renderDashboard(){
   document.getElementById("dashboardMeta").textContent=`数据范围：${dashboard.earliestDate.replace(/-/g,"/")}—${dashboard.latestDate.replace(/-/g,"/")} · ${dashboard.effectiveDays} 个有效统计日 · 最近 7 日 ${dashboard.latestWindow.label}`;
@@ -1602,9 +1609,7 @@ async function removeGroup(name){
   const ok=await persistRaw("remove group "+name,status);
   if(ok){status.textContent="✓ 已移除 "+name;status.className="fill-status ok";renderDashboard();renderManage();if(dashboardSection==="fill")renderFill();}
 }
-document.getElementById("addGroupBtn").addEventListener("click",addGroup);
-document.getElementById("newGroupName").addEventListener("keydown",e=>{if(e.key==="Enter")addGroup();});
-document.getElementById("newGroupSize").addEventListener("keydown",e=>{if(e.key==="Enter")addGroup();});
+/* 社群管理面板已按需求移除 */
 
 async function saveActivityValues(dateStr,values){
   const status=document.getElementById("fillStatus");
