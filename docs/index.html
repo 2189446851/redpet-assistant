@@ -99,14 +99,14 @@
     .bars-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px dashed #efe7d3}
     .bars-row:last-child{border-bottom:0}
     .bars-name{flex:0 0 128px;font-size:13px;font-weight:640;color:#4a463d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;align-self:center}
-    .bars-set{display:flex;align-items:flex-end;gap:10px;height:44px}
-    .bars-set i{position:relative;width:16px;border-radius:3px 3px 0 0;background:#9ec2f5;display:inline-block;min-height:4px}
+    .bars-set{flex:1;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;height:44px}
+    .bars-set i{position:relative;flex:1 1 28px;max-width:44px;min-width:0;border-radius:3px 3px 0 0;background:#9ec2f5;display:inline-block;min-height:4px}
     .bars-set i.lo{background:#f2a0b5}
     .bars-set i b{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:#5a6578;font-style:normal}
     .bars-axis{display:flex;justify-content:space-between;gap:16px;padding:8px 20px 16px;border-top:1px solid #f0e9d8}
     .bars-axis .bars-name{visibility:hidden}
     .bars-set.ax-set{height:14px;align-items:center}
-    .bars-set.ax-set i{width:16px;min-height:0;background:none;border-radius:0;text-align:center;line-height:14px;font-size:10px;color:#9aa0a6;font-weight:600}
+    .bars-set.ax-set i{flex:1 1 28px;max-width:44px;min-width:0;min-height:0;background:none;border-radius:0;text-align:center;line-height:14px;font-size:10px;color:#9aa0a6;font-weight:600}
     /* 数据总览趋势单卡 + 普通档概况窄条（对齐原型结构） */
     .trend-grid{grid-template-columns:1fr}
     .normal-strip{padding:10px 14px;font-size:13px;grid-column:1/-1}
@@ -123,6 +123,13 @@
     .subpage-back:hover{background:#fff8dc}
     .nav-toggle .bt-arrow{font-size:20px;color:#c9bf9f}
     .entry-card{cursor:pointer}
+    /* === 桌面适配（≥981px）：限宽居中，宽屏不再左右两极分化 === */
+    @media(min-width:981px){
+      #barsList,#barsAxis{max-width:780px;margin-left:auto;margin-right:auto;width:100%}
+      .focus-grid{grid-template-columns:repeat(3,1fr)}
+      .dashboard-section .mode-strip,.dashboard-section .big-toggle,.dashboard-section .subpage-head,.dashboard-section .find-row,.dashboard-section .legend,.dashboard-section .fill-hint,.dashboard-section .fill-card{max-width:780px;margin-left:auto;margin-right:auto}
+      .dashboard-section .hist-xwrap{max-width:1100px;margin-left:auto;margin-right:auto}
+    }
 </style>
 </head>
 <body>
@@ -197,7 +204,6 @@
               <p class="fill-hint" id="snapDetail" style="margin-top:8px">点数字格可看当天该档是哪些群 · 横向滑动看更早日期</p>
             </div>
           </div>
-        </div>
         </div>
         <div id="dashboardError" class="error-box" hidden></div>
       </section>
