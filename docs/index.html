@@ -110,6 +110,12 @@
     /* 数据总览趋势单卡 + 普通档概况窄条（对齐原型结构） */
     .trend-grid{grid-template-columns:1fr}
     .normal-strip{padding:10px 14px;font-size:13px;grid-column:1/-1}
+    /* 返回键：左上角固定悬浮（滚动不消失）；大类群折线放大 */
+    .back-button{position:fixed!important;top:14px;left:14px;z-index:60!important;width:auto!important;box-shadow:0 6px 16px rgba(83,65,34,.18)!important}
+    .site-header{padding-left:132px}
+    .spark{width:190px!important;height:44px!important}
+    .spark-path{stroke-width:2.4!important}
+    @media(max-width:680px){.site-header{padding-left:112px}.back-button{top:10px;left:10px;padding:7px 10px!important;font-size:13px!important}}
 </style>
 </head>
 <body>
@@ -190,7 +196,7 @@
           <div class="dashboard-section" data-scale-section="scov">
             <section class="card scale-total"><div class="st-num" id="scTotalNum">—</div><div class="st-sub" id="scTotalSub">全社群总人数</div></section>
             <section class="card panel" style="margin-top:14px"><div class="panel-head"><div><h2>总人数变化趋势</h2><div class="sub" id="scTrendSub">每周记录一次</div></div></div><div class="line-chart" id="scLineChart" role="img" aria-label="总人数变化趋势折线图"></div><p class="chart-note" id="scChartNote"></p></section>
-            <section class="card panel" style="margin-top:14px"><div class="panel-head"><div><h2>各大类群变化趋势</h2><div class="sub">按大类汇总，较上一记录期</div></div></div><div id="scCatList"></div></section>
+            <section class="card panel" style="margin-top:14px"><div class="panel-head"><div><h2>各大类群变化趋势</h2><div class="sub">每条折线为该大类各周总人数走势</div></div></div><div id="scCatList"></div></section>
           </div>
           <div class="dashboard-section" data-scale-section="scfill" hidden>
             <div class="mode-strip" id="scModeStrip">⚡ 当前自动从企微表格拉取 · <a id="scModeToggle">切手动</a></div>
@@ -1343,7 +1349,7 @@ function renderFocus(){
 }
 function sparkline(series,color){
   if(!series||series.length<2) return "";
-  const w=120,h=30,pad=3,max=Math.max(...series,1),min=Math.min(...series,0),span=Math.max(max-min,1);
+  const w=190,h=44,pad=5,max=Math.max(...series,1),min=Math.min(...series,0),span=Math.max(max-min,1);
   const x=i=>pad+(w-pad*2)*(i/(series.length-1));
   const y=v=>h-pad-(h-pad*2)*(v-min)/span;
   const pts=series.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
@@ -1670,8 +1676,8 @@ function renderScaleOverview(){
   const total=scaleTotal(latest);
   const delta=prev?total-scaleTotal(prev):null;
   document.getElementById("scTotalNum").textContent=total.toLocaleString();
-  document.getElementById("scTotalSub").innerHTML=`全社群总人数（截至 ${+latest.split("-")[1]}/${+latest.split("-")[2]}）`+(delta!=null?` · <b style="color:${delta>=0?"#d64541":"#3a9e63"}">${delta>=0?"▲ 较上期 +":"▼ 较上期 −"}${Math.abs(delta)} 人</b>`:"");
-  document.getElementById("scaleMeta").textContent=`数据范围：${dates[0].replace(/-/g,"/")}—${latest.replace(/-/g,"/")} · 共 ${dates.length} 期记录`;
+  document.getElementById("scTotalSub").innerHTML=`全社群总人数（截至 ${+latest.split("-")[1]}/${+latest.split("-")[2]}）`+(delta!=null?` · <b style="color:${delta>=0?"#d64541":"#3a9e63"}">${delta>=0?"▲ 较上周 +":"▼ 较上周 −"}${Math.abs(delta)} 人</b>`:"");
+  document.getElementById("scaleMeta").textContent=`数据范围：${dates[0].replace(/-/g,"/")}—${latest.replace(/-/g,"/")} · 共 ${dates.length} 周记录`;
   // 折线：最近 8 期
   const pts=dates.slice(-8).map(d=>({label:`${+d.split("-")[1]}/${+d.split("-")[2]}`,value:scaleTotal(d)}));
   const w=720,h=220,pad={x:34,y:24},max=Math.max(...pts.map(p=>p.value),1),min=Math.min(...pts.map(p=>p.value),0),span=Math.max(max-min,1);
@@ -1680,7 +1686,7 @@ function renderScaleOverview(){
   const coords=pts.map((p,i)=>`${x(i).toFixed(1)},${y(p.value).toFixed(1)}`);
   const area=`${pad.x},${h-pad.y} ${coords.join(" ")} ${x(pts.length-1)},${h-pad.y}`;
   document.getElementById("scLineChart").innerHTML=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><line class="line-grid" x1="${pad.x}" y1="${pad.y}" x2="${w-pad.x}" y2="${pad.y}"/><line class="line-grid" x1="${pad.x}" y1="${h/2}" x2="${w-pad.x}" y2="${h/2}"/><line class="line-grid" x1="${pad.x}" y1="${h-pad.y}" x2="${w-pad.x}" y2="${h-pad.y}"/><polygon class="line-fill" points="${area}"/><polyline class="line-path" points="${coords.join(" ")}"/>${pts.map((p,i)=>`<circle class="line-dot" cx="${x(i)}" cy="${y(p.value)}" r="3.5"/><text class="line-value" x="${x(i)}" y="${Math.max(13,y(p.value)-9)}" text-anchor="middle">${p.value}</text><text class="line-label" x="${x(i)}" y="${h-5}" text-anchor="middle">${escapeHTML(p.label)}</text>`).join("")}</svg>`;
-  document.getElementById("scChartNote").textContent=`折线展示最近 ${pts.length} 期总人数（每周记录一次）。`;
+  document.getElementById("scChartNote").textContent=`折线展示最近 ${pts.length} 周总人数（每周记录一次）。`;
   // 大类群趋势
   const cats={};
   scaleRaw.groups.forEach(g=>{const c=catOf(g.name);(cats[c]=cats[c]||[]).push(g);});
@@ -1692,7 +1698,7 @@ function renderScaleOverview(){
   }).sort((a,b)=>b.series.at(-1)-a.series.at(-1));
   document.getElementById("scCatList").innerHTML=catRows.map(r=>{
     const col=r.delta>=0?"#d64541":"#3a9e63";
-    return `<div class="cat-row"><span class="cat-name">${escapeHTML(r.c)}<span class="cat-sub">${r.n} 个群</span></span>${sparkline(r.series,col)}<b style="color:${col}">${r.delta>=0?"▲ +":"▼ −"}${Math.abs(r.delta)}/期</b></div>`;
+    return `<div class="cat-row"><span class="cat-name">${escapeHTML(r.c)}<span class="cat-sub">${r.n} 个群</span></span>${sparkline(r.series,col)}<b style="color:${col};white-space:nowrap;font-size:12px">较上周 ${r.delta>=0?"▲ +":"▼ −"}${Math.abs(r.delta)} 人</b></div>`;
   }).join("");
 }
 function renderScaleFill(){
