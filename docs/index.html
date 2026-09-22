@@ -1340,7 +1340,7 @@ function showView(view,section){
   else history.replaceState(null,"","#home");
   window.scrollTo({top:0,behavior:"smooth"});
 }
-document.querySelectorAll("[data-view-link]").forEach(c=>c.addEventListener("click",e=>{const v=c.dataset.viewLink;if(v){e.preventDefault();showView(v);}}));
+document.addEventListener("click",e=>{const t=e.target.closest("[data-view-link]");if(t&&t.dataset.viewLink){e.preventDefault();showView(t.dataset.viewLink);}});
 document.querySelectorAll("[data-dashboard-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.dashboardLink;showDashboardSection(s);if(s==="fill"){fillPage="home";renderFill();}}));
 document.querySelectorAll("[data-scale-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.scaleLink;showScaleSection(s);if(s==="scfill"){scFillPage="home";renderScaleFill();}}));
 
@@ -1866,6 +1866,12 @@ else if(initialHash.startsWith("scale")){showView("scale",initialHash.split("-")
 else if(initialHash==="dash"){showView("dashHome");}
 else if(initialHash==="assistant"){showView("assistant");}
 else showView("home");
+window.addEventListener("hashchange",()=>{const h=location.hash.replace("#","");
+if(h.startsWith("dashboard")){showView("dashboard",h.split("-")[1]||"overview");}
+else if(h.startsWith("scale")){showView("scale",h.split("-")[1]||"scov");}
+else if(h==="dash"){showView("dashHome");}
+else if(h==="assistant"){showView("assistant");}
+else if(h==="home"||h===""){showView("home");}});
 loadDashboard();
 
 </script>
