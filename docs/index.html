@@ -116,6 +116,11 @@
     .spark{width:190px!important;height:44px!important}
     .spark-path{stroke-width:2.4!important}
     @media(max-width:680px){.site-header{padding-left:112px}.back-button{top:10px;left:10px;padding:7px 10px!important;font-size:13px!important}}
+    /* 填写页改独立页面：子页头 + 圆形返回 */
+    .subpage-head{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:16px;font-weight:760;color:var(--text)}
+    .subpage-back{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fffefa;color:#66531f;font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 2px 8px rgba(83,65,34,.10)}
+    .subpage-back:hover{background:#fff8dc}
+    .nav-toggle .bt-arrow{font-size:20px;color:#c9bf9f}
 </style>
 </head>
 <body>
@@ -163,25 +168,31 @@
             <section class="card table-panel"><div class="table-toolbar detail-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="sub">各社群逐日发言次数，柱子越高越活跃</div></div><div class="detail-actions"><button class="save-btn secondary compact" type="button" id="exportFill2">导出备份</button></div></div><div id="barsList" class="bars-list"></div><div id="barsAxis" class="bars-axis"></div><div id="historyTablePanel" hidden style="padding:0 20px 16px"><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section>
           </div>
           <div class="dashboard-section" data-dashboard-section="fill" hidden>
-            <div class="mode-strip" id="modeStrip">⚡ 当前自动从企微表格拉取 · <a id="modeToggle">切手动</a></div>
-            <button class="big-toggle" type="button" id="tgToday"><span>📝 今日填写<span class="bt-sub">逐群填写当日发言人数，保存后自动写入历史并重算档位</span></span><span class="bt-arrow" id="tgTodayArrow">展开 ▾</span></button>
-            <div id="todayPanel" hidden>
+            <div id="fillHome">
+              <div class="mode-strip" id="modeStrip">⚡ 当前自动从企微表格拉取 · <a id="modeToggle">切手动</a></div>
+              <button class="big-toggle nav-toggle" type="button" id="goToday"><span>📝 今日填写<span class="bt-sub">逐群填写当日发言人数，保存后自动写入历史并重算档位</span></span><span class="bt-arrow">›</span></button>
+              <button class="big-toggle nav-toggle" type="button" id="goHist"><span>📋 历史数据<span class="bt-sub">企微表格中的全部记录，可按群查看或看每日活跃快照</span></span><span class="bt-arrow">›</span></button>
+            </div>
+            <div id="fillTodayPage" hidden>
+              <div class="subpage-head"><button class="subpage-back" type="button" id="backToday" aria-label="返回">‹</button><b>今日填写</b></div>
               <div class="fill-card"><div class="fill-head"><input class="date-pick" id="fillDate" type="date" aria-label="选择填写日期" /></div><div class="fill-list" id="fillList"></div><div class="fill-actions"><button class="save-btn" id="saveFill" type="button">保存今日数据</button><button class="save-btn secondary" id="exportFill" type="button">导出备份</button><span class="fill-status" id="fillStatus"></span></div><p class="fill-hint" style="margin-top:10px">保存即写入历史数据，并自动重算四档 / 趋势 / 潜在档，无需手动刷新。</p></div>
             </div>
-            <button class="big-toggle" type="button" id="tgHist"><span>📋 历史数据<span class="bt-sub">企微表格中的全部记录，可按群查看或看每日活跃快照</span></span><span class="bt-arrow" id="tgHistArrow">展开 ▾</span></button>
-            <div id="histPanel" hidden>
-              <button class="sub-toggle" type="button" id="tgByGroup"><span>👥 按群查看<span class="bt-sub">各群每天的发言人数（支持查找、点格子补填）</span></span><span class="bt-arrow" id="tgByGroupArrow">展开 ▾</span></button>
-              <div id="byGroupPanel" hidden>
-                <div class="find-row"><input id="findName" type="text" placeholder="群名，如：猫猫托儿所1群" /><select id="findDate"></select><button class="save-btn" type="button" id="findBtn">查找</button></div>
-                <div class="hist-xwrap"><table class="hist-x" id="byGroupTable"></table></div>
-                <div class="legend"><span><b style="color:#d64541">■</b> ≥20 人</span><span><b style="color:#e6a23c">■</b> 10–19 人</span><span><b style="color:#3a9e63">■</b> &lt;5 人</span><span>点格子可补填/修改，保存后自动重算</span></div>
-              </div>
-              <button class="sub-toggle" type="button" id="tgSnap"><span>📊 每日活跃快照<span class="bt-sub">每天各活跃度档位的群个数（单日表现，仅参考）</span></span><span class="bt-arrow" id="tgSnapArrow">展开 ▾</span></button>
-              <div id="snapPanel" hidden>
-                <p class="fill-hint">每天按当天发言人数给群分档：≥20 高活 · ≥10 活跃 · ≥5 普通 · &lt;5 低活。<b>单日表现只作参考</b>——正式档位仍按近 7 个有效统计日综合判定（见「活跃度分析」焦点卡）。</p>
-                <div class="hist-xwrap"><table class="hist-x" id="snapTable"></table></div>
-                <p class="fill-hint" id="snapDetail" style="margin-top:8px">点数字格可看当天该档是哪些群 · 横向滑动看更早日期</p>
-              </div>
+            <div id="fillHistPage" hidden>
+              <div class="subpage-head"><button class="subpage-back" type="button" id="backHist" aria-label="返回">‹</button><b>历史数据</b></div>
+              <button class="big-toggle nav-toggle" type="button" id="goByGroup"><span>👥 按群查看<span class="bt-sub">各群每天的发言人数（支持查找、点格子补填）</span></span><span class="bt-arrow">›</span></button>
+              <button class="big-toggle nav-toggle" type="button" id="goSnap"><span>📊 每日活跃快照<span class="bt-sub">每天各活跃度档位的群个数（单日表现，仅参考）</span></span><span class="bt-arrow">›</span></button>
+            </div>
+            <div id="fillByGroupPage" hidden>
+              <div class="subpage-head"><button class="subpage-back" type="button" id="backByGroup" aria-label="返回">‹</button><b>按群查看</b></div>
+              <div class="find-row"><input id="findName" type="text" placeholder="群名，如：猫猫托儿所1群" /><select id="findDate"></select><button class="save-btn" type="button" id="findBtn">查找</button></div>
+              <div class="hist-xwrap"><table class="hist-x" id="byGroupTable"></table></div>
+              <div class="legend"><span><b style="color:#d64541">■</b> ≥20 人</span><span><b style="color:#e6a23c">■</b> 10–19 人</span><span><b style="color:#3a9e63">■</b> &lt;5 人</span><span>点格子可补填/修改，保存后自动重算</span></div>
+            </div>
+            <div id="fillSnapPage" hidden>
+              <div class="subpage-head"><button class="subpage-back" type="button" id="backSnap" aria-label="返回">‹</button><b>每日活跃快照</b></div>
+              <p class="fill-hint">每天按当天发言人数给群分档：≥20 高活 · ≥10 活跃 · ≥5 普通 · &lt;5 低活。<b>单日表现只作参考</b>——正式档位仍按近 7 个有效统计日综合判定（见「活跃度分析」焦点卡）。</p>
+              <div class="hist-xwrap"><table class="hist-x" id="snapTable"></table></div>
+              <p class="fill-hint" id="snapDetail" style="margin-top:8px">点数字格可看当天该档是哪些群 · 横向滑动看更早日期</p>
             </div>
           </div>
         </div>
@@ -199,16 +210,20 @@
             <section class="card panel" style="margin-top:14px"><div class="panel-head"><div><h2>各大类群变化趋势</h2><div class="sub">每条折线为该大类各周总人数走势</div></div></div><div id="scCatList"></div></section>
           </div>
           <div class="dashboard-section" data-scale-section="scfill" hidden>
-            <div class="mode-strip" id="scModeStrip">⚡ 当前自动从企微表格拉取 · <a id="scModeToggle">切手动</a></div>
-            <button class="big-toggle" type="button" id="scTgFill"><span>📝 本期填写<span class="bt-sub">逐群填写本期人数，保存后自动写入历史并更新趋势</span></span><span class="bt-arrow" id="scTgFillArrow">展开 ▾</span></button>
-            <div id="scFillPanel" hidden>
+            <div id="scFillHome">
+              <div class="mode-strip" id="scModeStrip">⚡ 当前自动从企微表格拉取 · <a id="scModeToggle">切手动</a></div>
+              <button class="big-toggle nav-toggle" type="button" id="goScFill"><span>📝 本期填写<span class="bt-sub">逐群填写本期人数，保存后自动写入历史并更新趋势</span></span><span class="bt-arrow">›</span></button>
+              <button class="big-toggle nav-toggle" type="button" id="goScHist"><span>📋 历史数据<span class="bt-sub">企微表格中的全部记录（支持查找、点格子补改）</span></span><span class="bt-arrow">›</span></button>
+            </div>
+            <div id="scFillPage" hidden>
+              <div class="subpage-head"><button class="subpage-back" type="button" id="backScFill" aria-label="返回">‹</button><b>本期填写</b></div>
               <div class="fill-card"><div class="fill-head"><input class="date-pick" id="scFillDate" type="date" aria-label="选择填写日期" /></div><div class="fill-list" id="scFillList"></div><div class="fill-actions"><button class="save-btn" id="scSaveFill" type="button">保存本期数据</button><span class="fill-status" id="scFillStatus"></span></div><p class="fill-hint" style="margin-top:10px">保存后自动写进历史数据，总人数 / 折线 / 大类趋势自动更新。</p></div>
             </div>
-            <button class="big-toggle" type="button" id="scTgHist"><span>📋 历史数据<span class="bt-sub">企微表格中的全部记录（支持查找、点格子补改）</span></span><span class="bt-arrow" id="scTgHistArrow">展开 ▾</span></button>
-            <div id="scHistPanel" hidden>
+            <div id="scHistPage" hidden>
+              <div class="subpage-head"><button class="subpage-back" type="button" id="backScHist" aria-label="返回">‹</button><b>历史数据</b></div>
               <div class="find-row"><input id="scFindName" type="text" placeholder="群名，如：猫猫托儿所1群" /><select id="scFindDate"></select><button class="save-btn" type="button" id="scFindBtn">查找</button></div>
               <div class="hist-xwrap"><table class="hist-x" id="scHistTable"></table></div>
-              <div class="legend"><span><b style="color:#d64541">■</b> 较上一期增加</span><span><b style="color:#3a9e63">■</b> 较上一期减少</span><span>点格子可补填/修改</span></div>
+              <div class="legend"><span><b style="color:#d64541">■</b> 较上周增加</span><span><b style="color:#3a9e63">■</b> 较上周减少</span><span>点格子可补填/修改</span></div>
             </div>
           </div>
         </div>
@@ -1185,7 +1200,7 @@ const EMBEDDED_SCALE_DATA={
 };
 let dashboard=null, rawData=null, activeFilter="all", dashboardSection="overview", fillDateStr="";
 let scaleRaw=null, scaleSection="scov", scFillDateStr="";
-let todayOpen=false, histOpen=false, histView=null, scFillOpen=false, scHistOpen=false;
+let fillPage="home", scFillPage="home";
 const escapeHTML=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
 const signed=v=>`${v>0?"+":v<0?"−":""}${Math.abs(v).toFixed(1)}`;
 const round=(v,n=1)=>{const p=10**n;return Math.round(v*p)/p;};
@@ -1310,15 +1325,15 @@ function showView(view,section){
   document.getElementById("scaleView").hidden=!isS;
   document.getElementById("assistantView").hidden=!isA;
   if(isA){history.replaceState(null,"","#assistant");initAssistant();}
-  else if(isD){showDashboardSection(section||"overview",{updateHash:true,scroll:false}); if((section||"overview")==="fill") renderFill();}
-  else if(isS){showScaleSection(section||"scov",{updateHash:true,scroll:false}); if((section||"scov")==="scfill") renderScaleFill();}
+  else if(isD){showDashboardSection(section||"overview",{updateHash:true,scroll:false}); if((section||"overview")==="fill"){fillPage="home";renderFill();}}
+  else if(isS){showScaleSection(section||"scov",{updateHash:true,scroll:false}); if((section||"scov")==="scfill"){scFillPage="home";renderScaleFill();}}
   else if(isH){history.replaceState(null,"","#dash");}
   else history.replaceState(null,"","#home");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll("[data-view-link]").forEach(c=>c.addEventListener("click",e=>{const v=c.dataset.viewLink;if(v){e.preventDefault();showView(v);}}));
-document.querySelectorAll("[data-dashboard-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.dashboardLink;showDashboardSection(s);if(s==="fill")renderFill();}));
-document.querySelectorAll("[data-scale-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.scaleLink;showScaleSection(s);if(s==="scfill")renderScaleFill();}));
+document.querySelectorAll("[data-dashboard-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.dashboardLink;showDashboardSection(s);if(s==="fill"){fillPage="home";renderFill();}}));
+document.querySelectorAll("[data-scale-link]").forEach(b=>b.addEventListener("click",()=>{const s=b.dataset.scaleLink;showScaleSection(s);if(s==="scfill"){scFillPage="home";renderScaleFill();}}));
 
 const chipList=(names,emptyText)=>names.length?names.map(n=>`<span class="group-chip">${escapeHTML(n.name||n)}</span>`).join(""):`<span class="muted">${escapeHTML(emptyText)}</span>`;
 
@@ -1441,33 +1456,22 @@ function renderModeStrip(){
 function renderFill(){
   if(!rawData) return;
   renderModeStrip();
-  const dateInput=document.getElementById("fillDate");
-  if(!fillDateStr) fillDateStr=isoYesterday();
-  if(dateInput.value!==fillDateStr) dateInput.value=fillDateStr;
-  const rec=rawData.records[fillDateStr]||{};
-  document.getElementById("fillList").innerHTML=rawData.groups.map(g=>{
-    const v=rec[g.name];
-    return `<div class="fill-row"><span class="fn">${escapeHTML(g.name)}</span><input type="number" min="0" inputmode="numeric" data-group="${escapeHTML(g.name)}" value="${v??""}" placeholder="0" class="${v!=null&&v!==""?"filled":""}"></div>`;
-  }).join("");
-  document.getElementById("tgToday").classList.toggle("open",todayOpen);
-  document.getElementById("tgTodayArrow").textContent=todayOpen?"收起 ▴":"展开 ▾";
-  document.getElementById("todayPanel").hidden=!todayOpen;
-  document.getElementById("tgHist").classList.toggle("open",histOpen);
-  document.getElementById("tgHistArrow").textContent=histOpen?"收起 ▴":"展开 ▾";
-  document.getElementById("histPanel").hidden=!histOpen;
-  renderHistView();
+  const pages={home:"fillHome",today:"fillTodayPage",hist:"fillHistPage",bygroup:"fillByGroupPage",snap:"fillSnapPage"};
+  Object.keys(pages).forEach(k=>{const el=document.getElementById(pages[k]); if(el) el.hidden=(k!==fillPage);});
+  if(fillPage==="today"){
+    const dateInput=document.getElementById("fillDate");
+    if(!fillDateStr) fillDateStr=isoYesterday();
+    if(dateInput&&dateInput.value!==fillDateStr) dateInput.value=fillDateStr;
+    const rec=rawData.records[fillDateStr]||{};
+    document.getElementById("fillList").innerHTML=rawData.groups.map(g=>{
+      const v=rec[g.name];
+      return `<div class="fill-row"><span class="fn">${escapeHTML(g.name)}</span><input type="number" min="0" inputmode="numeric" data-group="${escapeHTML(g.name)}" value="${v??""}" placeholder="0" class="${v!=null&&v!==""?"filled":""}"></div>`;
+    }).join("");
+  }
+  if(fillPage==="bygroup") renderByGroup();
+  if(fillPage==="snap") renderSnapshot();
 }
-function renderHistView(){
-  const byOpen=histView==="by", snOpen=histView==="snap";
-  document.getElementById("tgByGroup").classList.toggle("open",byOpen);
-  document.getElementById("tgByGroupArrow").textContent=byOpen?"收起 ▴":"展开 ▾";
-  document.getElementById("byGroupPanel").hidden=!byOpen;
-  document.getElementById("tgSnap").classList.toggle("open",snOpen);
-  document.getElementById("tgSnapArrow").textContent=snOpen?"收起 ▴":"展开 ▾";
-  document.getElementById("snapPanel").hidden=!snOpen;
-  if(byOpen) renderByGroup();
-  if(snOpen) renderSnapshot();
-}
+function goFillPage(p){ fillPage=p; renderFill(); window.scrollTo({top:0,behavior:"smooth"}); }
 // 按群查看：行=群，列=全部日期
 function renderByGroup(){
   const dates=Object.keys(rawData.records).sort();
@@ -1534,10 +1538,14 @@ function renderSnapshot(){
   }));
 }
 document.getElementById("fillDate").addEventListener("change",e=>{fillDateStr=e.target.value;renderFill();});
-document.getElementById("tgToday").addEventListener("click",()=>{todayOpen=!todayOpen;renderFill();});
-document.getElementById("tgHist").addEventListener("click",()=>{histOpen=!histOpen;renderFill();});
-document.getElementById("tgByGroup").addEventListener("click",()=>{histView=histView==="by"?null:"by";renderHistView();});
-document.getElementById("tgSnap").addEventListener("click",()=>{histView=histView==="snap"?null:"snap";renderHistView();});
+document.getElementById("goToday").addEventListener("click",()=>goFillPage("today"));
+document.getElementById("goHist").addEventListener("click",()=>goFillPage("hist"));
+document.getElementById("goByGroup").addEventListener("click",()=>goFillPage("bygroup"));
+document.getElementById("goSnap").addEventListener("click",()=>goFillPage("snap"));
+document.getElementById("backToday").addEventListener("click",()=>goFillPage("home"));
+document.getElementById("backHist").addEventListener("click",()=>goFillPage("home"));
+document.getElementById("backByGroup").addEventListener("click",()=>goFillPage("hist"));
+document.getElementById("backSnap").addEventListener("click",()=>goFillPage("hist"));
 document.getElementById("findBtn").addEventListener("click",findCell);
 
 // ===== 社群管理 =====
@@ -1704,22 +1712,21 @@ function renderScaleOverview(){
 function renderScaleFill(){
   if(!scaleRaw) return;
   renderScaleModeStrip();
-  const dateInput=document.getElementById("scFillDate");
-  if(!scFillDateStr){const d=new Date();scFillDateStr=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
-  if(dateInput.value!==scFillDateStr) dateInput.value=scFillDateStr;
-  const rec=scaleRaw.records[scFillDateStr]||{};
-  document.getElementById("scFillList").innerHTML=scaleRaw.groups.map(g=>{
-    const v=rec[g.name];
-    return `<div class="fill-row"><span class="fn">${escapeHTML(g.name)}</span><input type="number" min="0" inputmode="numeric" data-group="${escapeHTML(g.name)}" value="${v??""}" placeholder="0" class="${v!=null&&v!==""?"filled":""}"></div>`;
-  }).join("");
-  document.getElementById("scTgFill").classList.toggle("open",scFillOpen);
-  document.getElementById("scTgFillArrow").textContent=scFillOpen?"收起 ▴":"展开 ▾";
-  document.getElementById("scFillPanel").hidden=!scFillOpen;
-  document.getElementById("scTgHist").classList.toggle("open",scHistOpen);
-  document.getElementById("scTgHistArrow").textContent=scHistOpen?"收起 ▴":"展开 ▾";
-  document.getElementById("scHistPanel").hidden=!scHistOpen;
-  if(scHistOpen) renderScaleHist();
+  const pages={home:"scFillHome",fill:"scFillPage",hist:"scHistPage"};
+  Object.keys(pages).forEach(k=>{const el=document.getElementById(pages[k]); if(el) el.hidden=(k!==scFillPage);});
+  if(scFillPage==="fill"){
+    const dateInput=document.getElementById("scFillDate");
+    if(!scFillDateStr){const d=new Date();scFillDateStr=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
+    if(dateInput&&dateInput.value!==scFillDateStr) dateInput.value=scFillDateStr;
+    const rec=scaleRaw.records[scFillDateStr]||{};
+    document.getElementById("scFillList").innerHTML=scaleRaw.groups.map(g=>{
+      const v=rec[g.name];
+      return `<div class="fill-row"><span class="fn">${escapeHTML(g.name)}</span><input type="number" min="0" inputmode="numeric" data-group="${escapeHTML(g.name)}" value="${v??""}" placeholder="0" class="${v!=null&&v!==""?"filled":""}"></div>`;
+    }).join("");
+  }
+  if(scFillPage==="hist") renderScaleHist();
 }
+function goScaleFillPage(p){ scFillPage=p; renderScaleFill(); window.scrollTo({top:0,behavior:"smooth"}); }
 function renderScaleHist(){
   const dates=scaleDates();
   const dateSel=document.getElementById("scFindDate");
@@ -1781,8 +1788,10 @@ function saveScaleFill(){
   afterScaleChange("✓ 已保存并写入历史，总人数 / 折线 / 大类趋势已自动更新");
 }
 document.getElementById("scFillDate").addEventListener("change",e=>{scFillDateStr=e.target.value;renderScaleFill();});
-document.getElementById("scTgFill").addEventListener("click",()=>{scFillOpen=!scFillOpen;renderScaleFill();});
-document.getElementById("scTgHist").addEventListener("click",()=>{scHistOpen=!scHistOpen;renderScaleFill();});
+document.getElementById("goScFill").addEventListener("click",()=>goScaleFillPage("fill"));
+document.getElementById("goScHist").addEventListener("click",()=>goScaleFillPage("hist"));
+document.getElementById("backScFill").addEventListener("click",()=>goScaleFillPage("home"));
+document.getElementById("backScHist").addEventListener("click",()=>goScaleFillPage("home"));
 document.getElementById("scSaveFill").addEventListener("click",saveScaleFill);
 document.getElementById("scFindBtn").addEventListener("click",scaleFindCell);
 
