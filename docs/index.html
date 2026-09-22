@@ -92,6 +92,16 @@
       .hist-x td.gname{text-align:left}
     }
 
+    /* 活跃度明细：柱状图（对齐原型 w11 明细结构） */
+    .detail-toolbar{align-items:center}
+    .detail-actions{display:flex;gap:8px;flex:0 0 auto}
+    .bars-list{padding:6px 20px 4px}
+    .bars-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed #efe7d3}
+    .bars-row:last-child{border-bottom:0}
+    .bars-name{font-size:13px;font-weight:640;color:#4a463d;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .bars-set{display:flex;align-items:flex-end;gap:2px;height:26px}
+    .bars-set i{width:6px;border-radius:2px 2px 0 0;background:#9ec2f5;display:inline-block;min-height:2px}
+    .bars-set i.lo{background:#f2a0b5}
 </style>
 </head>
 <body>
@@ -137,7 +147,7 @@
               <article class="card focus-card" style="--focus-color:#f15e4b;--chip-bg:#fff0ed;--chip-text:#b93b2b"><div class="focus-head"><h2>低活与预警</h2><span class="focus-count" id="lowCount"></span></div><p class="focus-copy" id="lowCopy"></p><div class="focus-list" id="lowList"></div><div class="focus-divider"></div><p class="focus-sub" id="warningSub">低活预警</p><div class="focus-list" id="warningList"></div><p class="focus-note" id="warningCopy"></p></article>
               <article class="card focus-card" style="--focus-color:#d18b24;--chip-bg:#fff6d8;--chip-text:#916018"><div class="focus-head"><h2>普通档概况</h2><span class="focus-count" id="normalCount"></span></div><p class="focus-copy">以下社群处于普通档，暂无需紧急动作；留意其中带潜在标记的社群。</p><div class="focus-list" id="normalList"></div></article>
             </section>
-            <section class="card table-panel"><div class="table-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="detail-tabs" role="tablist" aria-label="社群明细页面"><button class="detail-tab active" type="button" data-detail-link="focus">活跃重点</button><button class="detail-tab" type="button" data-detail-link="history">历史数据</button></div><div class="filters" id="filters" role="group" aria-label="筛选社群"></div></div><div style="display:flex;gap:8px;align-items:center"><input id="search" class="search" type="search" placeholder="搜索群名称" aria-label="搜索群名称" /><button class="save-btn secondary compact" type="button" id="exportFill2">导出备份</button></div></div><div id="focusTablePanel"><div class="table-scroll"><table><thead><tr id="focusTableHead"></tr></thead><tbody id="focusGroupRows"></tbody></table></div><div id="focusTableFoot" class="table-foot"></div></div><div id="historyTablePanel" hidden><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section>
+            <section class="card table-panel"><div class="table-toolbar detail-toolbar"><div><h2 class="table-title">社群活跃度明细</h2><div class="sub">各社群逐日发言次数，柱子越高越活跃</div></div><div class="detail-actions"><button class="save-btn secondary compact" type="button" id="tgDetailHist">查看历史数据 ▾</button><button class="save-btn secondary compact" type="button" id="exportFill2">导出备份</button></div></div><div id="barsList" class="bars-list"></div><p class="fill-hint" style="margin:8px 20px 0">↗「每日活跃快照」已移至【每日填写 → 历史数据】内</p><div id="historyTablePanel" hidden style="padding:0 20px 16px"><div class="table-scroll"><table><thead><tr id="historyTableHead"></tr></thead><tbody id="historyGroupRows"></tbody></table></div><div id="historyTableFoot" class="table-foot"></div></div></section>
           </div>
           <div class="dashboard-section" data-dashboard-section="fill" hidden>
             <div class="mode-strip" id="modeStrip">⚡ 当前自动从企微表格拉取 · <a id="modeToggle">切手动</a></div>
@@ -1370,7 +1380,7 @@ function renderFilters(){
   document.querySelectorAll(".filter").forEach(b=>b.addEventListener("click",()=>{activeFilter=b.dataset.filter;renderFilters();renderTable();}));
 }
 const getRows=()=>{
-  const q=document.getElementById("search").value.trim().toLowerCase();
+  const se=document.getElementById("search"); const q=se?se.value.trim().toLowerCase():"";
   const prio=g=>g.tier==="低活"?0:g.warning?1:g.potentialHigh?2:g.tier==="高活"?3:g.potentialActive?4:g.tier==="活跃"?5:6;
   return dashboard.groups.filter(g=>(activeFilter==="all"||(activeFilter==="new"?!g.hasData:activeFilter==="warning"?g.warning:activeFilter==="potHigh"?g.potentialHigh:activeFilter==="potActive"?g.potentialActive:g.tier===activeFilter))&&g.name.toLowerCase().includes(q)).sort((a,b)=>prio(a)-prio(b)||(prio(a)<=1?a.latest-b.latest:b.latest-a.latest));
 };
@@ -1378,9 +1388,7 @@ function rowClass(g){return g.tier==="低活"?"row-low":g.warning?"row-warning":
 function riskOf(g){return g.tier==="低活"?(g.previousTier==="低活"?"持续低活":"近7日低活"):g.warning?"低活预警":g.potentialHigh?"潜在高活":g.potentialActive?"潜在活跃":"—";}
 function renderTable(){
   const rows=getRows();
-  document.getElementById("focusTableHead").innerHTML=["社群","当前活跃度","近 7 日档位","需关注","半月变化","群规模"].map(l=>`<th>${l}</th>`).join("");
-  document.getElementById("focusGroupRows").innerHTML=rows.length?rows.map(g=>`<tr class="${rowClass(g)}"><td data-label="社群">${escapeHTML(g.name)}</td><td data-label="当前活跃度"><span class="activity-value">${g.latest}<small>人</small></span></td><td data-label="近 7 日档位"><span class="pill ${tierClass[g.tier]}">${g.tier}</span></td><td data-label="需关注">${riskOf(g)==="—"?'<span class="muted">—</span>':`<span class="warn">${riskOf(g)}</span>`}</td><td class="change-cell ${g.change>0?"delta-up":g.change<0?"delta-down":"muted"}" data-label="半月变化">${signed(g.change)}</td><td class="num" data-label="群规模">${g.size??'<span class="muted">未记录</span>'}</td></tr>`).join(""):emptyRow(6);
-  // 历史数据：全部有效统计日（不再只显最近15天）
+  // 历史数据：全部有效统计日
   const allDs=dashboard.allDates;
   const histDates=allDs.map(d=>`${+d.split("-")[1]}/${+d.split("-")[2]}`);
   document.getElementById("historyTableHead").innerHTML=["社群",...histDates.map(l=>`${l}`),"档位","半月变化"].map(l=>`<th>${escapeHTML(l)}</th>`).join("");
@@ -1388,12 +1396,29 @@ function renderTable(){
     const cells=allDs.map(d=>{const rec=rawData.records[d]||{};const v=rec[g.name];return `<td class="num" data-label="人数">${v??"—"}</td>`;}).join("");
     return `<tr class="${rowClass(g)}"><td data-label="社群">${escapeHTML(g.name)}</td>${cells}<td data-label="档位"><span class="pill ${tierClass[g.tier]}">${g.tier}</span></td><td class="change-cell ${g.change>0?"delta-up":g.change<0?"delta-down":"muted"}" data-label="半月变化">${signed(g.change)}</td></tr>`;
   }).join(""):emptyRow(histDates.length+2);
-  ["focusTableFoot","historyTableFoot"].forEach(id=>document.getElementById(id).textContent=rows.length?`共 ${rows.length} 个社群 · 历史数据共 ${allDs.length} 天（全部记录）`:"");
+  const hf=document.getElementById("historyTableFoot"); if(hf) hf.textContent=rows.length?`共 ${rows.length} 个社群 · 历史数据共 ${allDs.length} 天（全部记录）`:"";
 }
 const emptyRow=span=>`<tr class="empty-row"><td colspan="${span}">当前没有符合条件的社群</td></tr>`;
+function renderBars(){
+  const el=document.getElementById("barsList");
+  if(!el||!rawData||!dashboard) return;
+  const allDs=dashboard.allDates||[];
+  const show=allDs.slice(-16);
+  el.innerHTML=dashboard.groups.map(g=>{
+    const bars=show.map(d=>{
+      const v=(rawData.records[d]||{})[g.name];
+      const n=(v==null||v==="")?null:Number(v);
+      const h=n==null?2:Math.max(2,Math.min(26,Math.round(n/20*26)));
+      const lo=(n!=null&&n<5)?" lo":"";
+      const t=`${+d.split("-")[1]}/${+d.split("-")[2]} · ${n==null?"—":n+"人"}`;
+      return `<i class="${lo}" style="height:${h}px" title="${t}"></i>`;
+    }).join("");
+    return `<div class="bars-row"><span class="bars-name" title="${escapeHTML(g.name)}">${escapeHTML(g.name)}</span><span class="bars-set">${bars}</span></div>`;
+  }).join("");
+}
 function renderDashboard(){
   document.getElementById("dashboardMeta").textContent=`数据范围：${dashboard.earliestDate.replace(/-/g,"/")}—${dashboard.latestDate.replace(/-/g,"/")} · ${dashboard.effectiveDays} 个有效统计日 · 最近 7 日 ${dashboard.latestWindow.label}`;
-  renderTierSummary();renderFocus();renderTrend();renderFilters();renderTable();
+  renderTierSummary();renderFocus();renderTrend();renderTable();renderBars();
   document.getElementById("dashboardLoading").hidden=true; document.getElementById("dashboardContent").hidden=false;
 }
 
@@ -1814,9 +1839,7 @@ async function loadDashboard(){
     showOfflineBanner(true,"内置备份");
   }
 }
-document.getElementById("search").addEventListener("input",()=>dashboard&&renderTable());
-function showDetailTable(view){const isFocus=view!=="history";document.getElementById("focusTablePanel").hidden=!isFocus;document.getElementById("historyTablePanel").hidden=isFocus;document.querySelectorAll("[data-detail-link]").forEach(b=>b.classList.toggle("active",b.dataset.detailLink===(isFocus?"focus":"history")));}
-document.querySelectorAll("[data-detail-link]").forEach(b=>b.addEventListener("click",()=>showDetailTable(b.dataset.detailLink)));
+(function(){const b=document.getElementById("tgDetailHist");if(b)b.addEventListener("click",()=>{const p=document.getElementById("historyTablePanel");if(!p)return;const open=p.hidden;p.hidden=!open;b.textContent=open?"收起 ▴":"查看历史数据 ▾";});})();
 const initialHash=location.hash.replace("#","");
 if(initialHash.startsWith("dashboard")){showView("dashboard",initialHash.split("-")[1]||"overview");}
 else if(initialHash.startsWith("scale")){showView("scale",initialHash.split("-")[1]||"scov");}
