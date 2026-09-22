@@ -200,6 +200,7 @@
             <div id="fillSnapPage" hidden>
               <div class="subpage-head"><button class="subpage-back" type="button" id="backSnap" aria-label="返回">‹</button><b>每日活跃快照</b></div>
               <p class="fill-hint">每天按当天发言人数给群分档：≥20 高活 · ≥10 活跃 · ≥5 普通 · &lt;5 低活。<b>单日表现只作参考</b>——正式档位仍按近 7 个有效统计日综合判定（见「活跃度分析」焦点卡）。</p>
+              <div class="find-row"><input id="snapFindName" type="text" placeholder="群名，如：猫猫托儿所1群" /><select id="snapFindDate"></select><button class="save-btn" type="button" id="snapFindBtn">查找</button></div>
               <div class="hist-xwrap"><table class="hist-x" id="snapTable"></table></div>
               <p class="fill-hint" id="snapDetail" style="margin-top:8px">点数字格可看当天该档是哪些群 · 横向滑动看更早日期</p>
             </div>
@@ -1521,12 +1522,16 @@ async function editActivityCell(date,group){
   await saveActivityValues(date,{[group]:n});
 }
 // 每日活跃快照：行=单日四档，列=全部日期
+const SNAP_TIERS=[["高活社群（≥20人）","#1a73e8",v=>v>=20],["活跃社群（≥10人）","#3a9e63",v=>v>=10&&v<20],["普通社群（≥5人）","#e6a23c",v=>v>=5&&v<10],["低活社群（<5人）","#d64541",v=>v<5]];
+function tierIndexOf(v){return SNAP_TIERS.findIndex(t=>t[2](+v));}
 function renderSnapshot(){
   const dates=Object.keys(rawData.records).sort().filter(d=>{
     const row=rawData.records[d]||{};
     return rawData.groups.some(g=>row[g.name]!=null);
   });
-  const tiers=[["高活社群（≥20人）","#1a73e8",v=>v>=20],["活跃社群（≥10人）","#3a9e63",v=>v>=10&&v<20],["普通社群（≥5人）","#e6a23c",v=>v>=5&&v<10],["低活社群（<5人）","#d64541",v=>v<5]];
+  const dateSel=document.getElementById("snapFindDate");
+  dateSel.innerHTML=dates.slice().reverse().map(d=>`<option value="${d}">${+d.split("-")[1]}/${+d.split("-")[2]}</option>`).join("");
+  const tiers=SNAP_TIERS;
   let html=`<tr><th class="gname">单日档位</th>${dates.map(d=>`<th>${+d.split("-")[1]}/${+d.split("-")[2]}</th>`).join("")}</tr>`;
   tiers.forEach(([label,color],ti)=>{
     html+=`<tr><td class="gname"><span class="snap-sq" style="background:${color}"></span>${label}</td>${dates.map(d=>{
@@ -1546,11 +1551,27 @@ function renderSnapshot(){
     document.getElementById("snapDetail").innerHTML=`【${+d.split("-")[1]}/${+d.split("-")[2]} · ${tiers[ti][0].split("（")[0]}】${list.length?list.join("、"):"（无）"}`;
   }));
 }
+function snapFind(){
+  const name=document.getElementById("snapFindName").value.trim();
+  const date=document.getElementById("snapFindDate").value;
+  if(!name){alert("先输入群名");return;}
+  const g=rawData.groups.find(x=>x.name===name)||rawData.groups.find(x=>x.name.includes(name));
+  if(!g){alert("没找到这个群，检查群名");return;}
+  const v=(rawData.records[date]||{})[g.name];
+  if(v==null){alert(`${g.name} 在 ${+date.split("-")[1]}/${+date.split("-")[2]} 没有记录`);return;}
+  const ti=tierIndexOf(v);
+  const tb=document.getElementById("snapTable");
+  tb.querySelectorAll(".snap-cell").forEach(x=>x.style.background="");
+  const td=tb.querySelector(`.snap-cell[data-date="${date}"][data-tier="${ti}"]`);
+  if(td){td.style.background="#fdeeba";td.scrollIntoView({behavior:"smooth",block:"center",inline:"center"});}
+  document.getElementById("snapDetail").innerHTML=`找到：${g.name} · ${+date.split("-")[1]}/${+date.split("-")[2]} · 发言 ${v} 人 → <b>${SNAP_TIERS[ti][0]}</b>`;
+}
 document.getElementById("fillDate").addEventListener("change",e=>{fillDateStr=e.target.value;renderFill();});
 document.getElementById("goToday").addEventListener("click",()=>goFillPage("today"));
 document.getElementById("goHist").addEventListener("click",()=>goFillPage("hist"));
 document.getElementById("goByGroup").addEventListener("click",()=>goFillPage("bygroup"));
 document.getElementById("goSnap").addEventListener("click",()=>goFillPage("snap"));
+document.getElementById("snapFindBtn").addEventListener("click",snapFind);
 document.getElementById("backToday").addEventListener("click",()=>goFillPage("home"));
 document.getElementById("backHist").addEventListener("click",()=>goFillPage("home"));
 document.getElementById("backByGroup").addEventListener("click",()=>goFillPage("hist"));
