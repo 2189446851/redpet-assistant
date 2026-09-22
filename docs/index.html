@@ -122,6 +122,7 @@
     .subpage-back{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fffefa;color:#66531f;font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 2px 8px rgba(83,65,34,.10)}
     .subpage-back:hover{background:#fff8dc}
     .nav-toggle .bt-arrow{font-size:20px;color:#c9bf9f}
+    .entry-card{cursor:pointer}
 </style>
 </head>
 <body>
@@ -132,8 +133,8 @@
     <main>
       <section id="homeView" class="page">
         <div class="entry-grid">
-          <article class="entry-card" style="--entry-bg:#ff765f;--entry-border:#e95b48;--entry-text:#202020;--entry-color:#22252b;--entry-action-text:#fff;--entry-icon-color:#e75340;--entry-soft:#fff5df;--entry-halo:#ffd68d"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 18.5 3.5 20l1.2-3.7A8.3 8.3 0 1 1 7 18.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><h2>AI小助手</h2><a class="entry-action" href="#assistant" data-view-link="assistant" role="button">打开 AI小助手 <span aria-hidden="true">→</span></a></article>
-          <article class="entry-card" style="--entry-bg:#ffe99c;--entry-border:#e6ca68;--entry-text:#20242f;--entry-color:#315bc6;--entry-soft:#fffaf0;--entry-halo:#43b08f;--entry-copy:#665c41"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V11h4v8m4 0V6h4v13m4 0V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群数据看板</h2><button class="entry-action" type="button" data-view-link="dashHome">查看数据看板 <span aria-hidden="true">→</span></button></article>
+          <article class="entry-card" data-view-link="assistant" style="--entry-bg:#ff765f;--entry-border:#e95b48;--entry-text:#202020;--entry-color:#22252b;--entry-action-text:#fff;--entry-icon-color:#e75340;--entry-soft:#fff5df;--entry-halo:#ffd68d"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 18.5 3.5 20l1.2-3.7A8.3 8.3 0 1 1 7 18.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><h2>AI小助手</h2><a class="entry-action" href="#assistant" data-view-link="assistant" role="button">打开 AI小助手 <span aria-hidden="true">→</span></a></article>
+          <article class="entry-card" data-view-link="dashHome" style="--entry-bg:#ffe99c;--entry-border:#e6ca68;--entry-text:#20242f;--entry-color:#315bc6;--entry-soft:#fffaf0;--entry-halo:#43b08f;--entry-copy:#665c41"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V11h4v8m4 0V6h4v13m4 0V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群数据看板</h2><button class="entry-action" type="button" data-view-link="dashHome">查看数据看板 <span aria-hidden="true">→</span></button></article>
         </div>
         <div id="homeError" class="error-box" hidden></div>
       </section>
@@ -141,8 +142,8 @@
       <section id="dashHomeView" class="page" hidden>
         <div class="dashboard-head"><div><p class="eyebrow">数据看板</p><h1>社群数据看板</h1><div class="dashboard-meta">选一个板块进入</div></div><button class="back-button" type="button" data-view-link="home">← 返回首页</button></div>
         <div class="entry-grid">
-          <article class="entry-card" style="--entry-color:#315bc6;--entry-soft:#eef3ff;--entry-halo:#9db9f2;--entry-icon-color:#315bc6"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M16 19v-8m-8 8V5m4 14v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群规模</h2><p>总人数趋势 · 大类群趋势 · 数据填写</p><button class="entry-action" type="button" data-view-link="scale">进入社群规模 <span aria-hidden="true">→</span></button></article>
-          <article class="entry-card" style="--entry-color:#2c9d7a;--entry-soft:#e8f8f1;--entry-halo:#7ed3b2;--entry-icon-color:#2c9d7a"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2 6 4-14 2 8h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群活跃度</h2><p>数据总览 · 活跃度分析 · 每日填写</p><button class="entry-action" type="button" data-view-link="dashboard">进入社群活跃度 <span aria-hidden="true">→</span></button></article>
+          <article class="entry-card" data-view-link="scale" style="--entry-color:#315bc6;--entry-soft:#eef3ff;--entry-halo:#9db9f2;--entry-icon-color:#315bc6"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M16 19v-8m-8 8V5m4 14v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群规模</h2><p>总人数趋势 · 大类群趋势 · 数据填写</p><button class="entry-action" type="button" data-view-link="scale">进入社群规模 <span aria-hidden="true">→</span></button></article>
+          <article class="entry-card" data-view-link="dashboard" style="--entry-color:#2c9d7a;--entry-soft:#e8f8f1;--entry-halo:#7ed3b2;--entry-icon-color:#2c9d7a"><div class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2 6 4-14 2 8h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2>社群活跃度</h2><p>数据总览 · 活跃度分析 · 每日填写</p><button class="entry-action" type="button" data-view-link="dashboard">进入社群活跃度 <span aria-hidden="true">→</span></button></article>
         </div>
       </section>
 
