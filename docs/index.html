@@ -1632,7 +1632,7 @@ async function persistRaw(message,statusEl){
     const res=await fetch(API_GROUPS+eoAuth(""),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({groups:rawData.groups,password:password})});
     const j=await res.json().catch(()=>({}));
     if(!res.ok||!j.ok) throw new Error(j.error||("服务器返回 "+res.status));
-    try{ const r2=await fetch(API_DATA+eoAuth("t="+Date.now()),{cache:"no-store"}); if(r2.ok){const fresh=await r2.json(); if(fresh&&fresh.groups){const md=d=>{const ks=Object.keys((d&&d.records)||{}).sort();return ks.length?ks[ks.length-1]:"";}; if(md(fresh)>=md(rawData)){rawData=fresh; dashboard=computeModel(rawData);} } } }catch(e){}
+    try{ const r2=await fetch(API_DATA+eoAuth("t="+Date.now()),{cache:"no-store"}); if(r2.ok){const fresh=await r2.json(); if(fresh&&fresh.groups){ rawData=mergeData(rawData,fresh); dashboard=computeModel(rawData); } } }catch(e){}
     return true;
   }catch(err){if(statusEl){statusEl.textContent="保存失败："+err.message;statusEl.className="fill-status err";}return false;}
 }
@@ -1847,19 +1847,27 @@ async function loadDashboard(){
     if(manual&&manual.records){for(const d of Object.keys(manual.records)){if(!scaleRaw.records[d])scaleRaw.records[d]={};Object.assign(scaleRaw.records[d],manual.records[d]);}if(manual.groups&&manual.groups.length>scaleRaw.groups.length)scaleRaw.groups=manual.groups;}
     renderScaleOverview(); renderScaleFill();
   }catch(e){ console.error("规模数据渲染失败",e); }
+  // 合并企微内嵌数据与飞书在线数据：按日期并集；重叠日期以 embedded（手工维护的真相）为准，fresh（飞书实时）只在 embedded 缺的日期补位
+  function mergeData(embedded, fresh){
+    const hasFresh = fresh && fresh.records && Object.keys(fresh.records).length;
+    const base = hasFresh ? fresh : embedded;
+    const groups = (base && base.groups || []).map(g=>({name:g.name,size:g.size}));
+    const seen = new Set(groups.map(g=>g.name));
+    for(const g of ((embedded&&embedded.groups)||[])){ if(!seen.has(g.name)){ groups.push({name:g.name,size:g.size}); seen.add(g.name); } }
+    const records = {};
+    if(hasFresh) for(const d of Object.keys(fresh.records)) records[d] = Object.assign({}, fresh.records[d]);
+    if(embedded && embedded.records) for(const d of Object.keys(embedded.records)) records[d] = Object.assign({}, records[d]||{}, embedded.records[d]);
+    const maxD = d=>{const ks=Object.keys(d).sort();return ks.length?ks[ks.length-1]:"";};
+    return { version:(base&&base.version)||1, updatedAt:(hasFresh?maxD(fresh.records):maxD(embedded.records)), groups, records };
+  }
   // 后台尝试拉取最新在线数据
   try{
     const res=await fetch(API_DATA+eoAuth("t="+Date.now()),{cache:"no-store"});
     if(res.ok){
       const fresh=await res.json();
       if(fresh && fresh.groups && fresh.records){
-        // 企微表格同步（内嵌数据）与飞书后端（在线数据）取较新一份，避免旧数据覆盖表格真值
-        const maxDate=d=>{const ks=Object.keys((d&&d.records)||{}).sort();return ks.length?ks[ks.length-1]:"";};
-        if(maxDate(fresh) >= maxDate(EMBEDDED_DAILY_DATA)){
-          rawData=fresh;
-        }else{
-          console.info("内嵌的企微表格数据更新，保留内嵌数据（",maxDate(EMBEDDED_DAILY_DATA),"）");
-        }
+        // 合并：企微内嵌(手工维护的真相) 与 飞书在线(网页填写的实时数据) 按日期并集；重叠日期企微优先，飞书只在企微缺的日期补位
+        rawData = mergeData(EMBEDDED_DAILY_DATA, fresh);
         showOfflineBanner(false);
         try{
           dashboard=computeModel(rawData); renderDashboard();
