@@ -1858,7 +1858,7 @@ async function loadDashboard(){
     if(hasFresh) for(const d of Object.keys(fresh.records)) records[d] = Object.assign({}, fresh.records[d]);
     if(embedded && embedded.records) for(const d of Object.keys(embedded.records)) records[d] = Object.assign({}, records[d]||{}, embedded.records[d]);
     const maxD = d=>{const ks=Object.keys(d).sort();return ks.length?ks[ks.length-1]:"";};
-    return { version:(base&&base.version)||1, updatedAt:(hasFresh?maxD(fresh.records):maxD(embedded.records)), groups, records };
+    return { version:(base&&base.version)||1, updatedAt:maxD(records), groups, records };
   }
   // 后台尝试拉取最新在线数据
   try{
