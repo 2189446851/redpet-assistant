@@ -112,10 +112,11 @@
     .normal-strip{padding:10px 14px;font-size:13px;grid-column:1/-1}
     /* 返回键：左上角固定悬浮（滚动不消失）；大类群折线放大 */
     .back-button{position:fixed!important;top:14px;left:14px;z-index:60!important;width:auto!important;box-shadow:0 6px 16px rgba(83,65,34,.18)!important}
-    .site-header{padding-left:132px}
+    .site-header.with-back{padding-left:132px}
     .spark{width:190px!important;height:44px!important}
     .spark-path{stroke-width:2.4!important}
-    @media(max-width:680px){.site-header{padding-left:112px}.back-button{top:10px;left:10px;padding:7px 10px!important;font-size:13px!important}}
+    .assistant-back{position:fixed!important;top:14px!important;right:auto!important;left:14px!important;z-index:70!important}
+    @media(max-width:680px){.site-header.with-back{padding-left:112px}.back-button{top:10px;left:10px;padding:7px 10px!important;font-size:13px!important}.assistant-back{top:10px!important;left:10px!important}}
     /* 填写页改独立页面：子页头 + 圆形返回 */
     .subpage-head{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:16px;font-weight:760;color:var(--text)}
     .subpage-back{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fffefa;color:#66531f;font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 2px 8px rgba(83,65,34,.10)}
@@ -1319,6 +1320,7 @@ function showScaleSection(section,opts={}){
 }
 function showView(view,section){
   const isD=view==="dashboard", isA=view==="assistant", isH=view==="dashHome", isS=view==="scale";
+  const hdr=document.querySelector(".site-header"); if(hdr) hdr.classList.toggle("with-back", !!(isD||isA||isH||isS));
   document.getElementById("homeView").hidden=isD||isA||isH||isS;
   document.getElementById("dashHomeView").hidden=!isH;
   document.getElementById("dashboardView").hidden=!isD;
