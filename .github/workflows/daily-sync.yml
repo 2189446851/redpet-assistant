@@ -1,0 +1,89 @@
+name: RedPet Dashboard Daily Sync
+
+on:
+  workflow_dispatch:   # 手动触发；每日定时（schedule）在 dispatch 实测通过后由李胜利加回
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - name: 拉取仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 准备 Node（企微 CLI 需要）
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装企微 CLI
+        run: |
+          mkdir -p "$HOME/.config/wecom"
+          npm install @wecom/cli --prefix work/wecom-cli-runtime 2>&1 | tail -3
+          ls -l work/wecom-cli-runtime/node_modules/@wecom/cli/bin/wecom.js
+          echo "WECOM_NODE=$(which node)" >> "$GITHUB_ENV"
+
+      - name: 恢复企微登录凭证
+        env:
+          WECOM_CRED: ${{ secrets.WECOM_CREDENTIALS }}
+          WECOM_KEY: ${{ secrets.WECOM_ENCRYPTION_KEY }}
+        run: |
+          printf '%s' "$WECOM_CRED" | base64 -d > "$HOME/.config/wecom/credentials.enc"
+          printf '%s' "$WECOM_KEY"  | base64 -d > "$HOME/.config/wecom/.encryption_key"
+          chmod 600 "$HOME/.config/wecom/credentials.enc" "$HOME/.config/wecom/.encryption_key"
+          ls -l "$HOME/.config/wecom"
+
+      - name: 从企业微信在线表格取数并生成 TSV
+        env:
+          WECHAT_DOC_ACTIVITY: ${{ secrets.WECHAT_DOC_ACTIVITY }}
+          WECHAT_DOC_SIZES: ${{ secrets.WECHAT_DOC_SIZES }}
+        run: |
+          mkdir -p work/wecom-sync/output
+          # GitHub 服务器在国外访问企微，偶发网络抖动，失败自动重试 3 次
+          for i in 1 2 3; do
+            echo "===== 第 $i 次尝试 ====="
+            if python work/wecom-sync/sync.py wecom; then
+              echo "✅ 取数成功"
+              exit 0
+            fi
+            echo "⚠️ 第 $i 次失败，25 秒后重试"
+            sleep 25
+          done
+          echo "❌ 3 次均失败"
+          exit 1
+
+      - name: 将 TSV 写入看板页面（内嵌数据）
+        run: |
+          python scripts/sync_build_data.py work/wecom-sync/output/daily.tsv work/wecom-sync/output/scale.tsv .
+
+      - name: 提交并推送
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "数据无变化，今日不提交"
+          else
+            git commit -m "daily sync $(date -u +%F)"
+            git push
+          fi
+
+      - name: 失败告警（开 issue）
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ 看板每日同步失败 ' + new Date().toISOString().slice(0,10),
+              body: 'GitHub Actions 自动读企微表失败，最可能的原因是**企微登录态过期**（WECOM_CREDENTIALS 失效）。\n\n排查步骤：\n1. 看本次运行日志：' + context.serverUrl + '/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + '\n2. 若提示登录态过期，需重新登录企微生成新凭证并更新仓库 Secrets\n3. 临时替代：本机运行 scripts/sync_run.cmd 手动同步\n\n（数据面板「看和分析」不受影响，只是没自动长出新数据）'
+            })
