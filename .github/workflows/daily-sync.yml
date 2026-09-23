@@ -3,7 +3,7 @@ name: RedPet Dashboard Daily Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: '3 10 * * *'     # 18:03 北京时间（主：你记忆里的「下午6点」）
+    - cron: '3 3 * * *'      # 11:03 北京时间（主：你要求改成早上11点）
     - cron: '23 7 * * *'     # 15:23 北京时间（兜底：防前一次偶发失败漏跑）
 
 jobs:
