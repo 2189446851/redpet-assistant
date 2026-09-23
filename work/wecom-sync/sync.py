@@ -77,7 +77,13 @@ def wecom_run(args, out_path=None):
     res = subprocess.run(WECOM_CLI + args, capture_output=True, text=True,
                          encoding="utf-8", errors="replace")
     if res.returncode != 0:
-        raise SystemExit(f"wecom 命令失败：{' '.join(WECOM_CLI + args)}\n{res.stderr.strip()}")
+        # ⚠️ 企微 CLI 的报错（如 errcode 850003 授权过期）常写在 stdout（JSON），
+        #    不在 stderr，必须把两者都打出来，否则 Actions 日志里只会看到"命令失败"而无原因。
+        raise SystemExit(
+            f"wecom 命令失败：{' '.join(WECOM_CLI + args)}\n"
+            f"[stderr]\n{res.stderr.strip()}\n"
+            f"[stdout]\n{res.stdout.strip()}"
+        )
     if out_path:
         Path(out_path).write_text(res.stdout, encoding="utf-8")
     return res.stdout
